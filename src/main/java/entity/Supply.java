@@ -12,9 +12,39 @@ public class Supply {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    private int ammunition;
+    private int food;
+    private int equipment;
 
-    private String supplyName;
-    private int quantity;
+    public Supply(){
+        this.ammunition = 500;
+        this.food = 1000;
+        this.equipment = 200;
+    }
+
+    public int getAmmunition() {
+        return ammunition;
+    }
+
+    public void setAmmunition(int ammunition) {
+        this.ammunition = ammunition;
+    }
+
+    public int getFood() {
+        return food;
+    }
+
+    public void setFood(int food) {
+        this.food = food;
+    }
+
+    public int getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(int equipment) {
+        this.equipment = equipment;
+    }
 
     public int getId() {
         return id;
@@ -22,21 +52,5 @@ public class Supply {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getSupplyName() {
-        return supplyName;
-    }
-
-    public void setSupplyName(String supplyName) {
-        this.supplyName = supplyName;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 }

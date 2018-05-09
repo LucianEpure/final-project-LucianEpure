@@ -4,24 +4,23 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
+    <link href="css/login.css" rel="Stylesheet">
 </head>
 <body>
-<div align = center class="container">
-    <form action="#" th:action="@{/login}" th:object="${userDto}" method="post">
+<div class="login-page">
+    <div class="form">
+    <form class="login-form" action="#" th:action="@{/login}" th:object="${userDto}" method="post">
         <h1>Authentication</h1>
-        <p>Username: <input type="text" onfocus="this.value=''" th:field="*{username}" /></p>
-        <p>Password: <input type="password" onfocus="this.value=''" th:field="*{password}" /></p>
-        <p><input type="submit" name="login" value="Login" /></p>
-        <div align = "center" style="background-color:lightblue">
+        <input type="text" onfocus="this.value=''" placeholder="username" th:field="*{username}" /></p>
+        <input type="password" onfocus="this.value=''"  placeholder="password"th:field="*{password}" /></p>
+        <button name="login">Login</button>
+        <div class = "validation" align = "center">
             <h4>Validation</h4>
             <p th:text="${valid}" /></p>
         </div>
     </form>
 
-    <form th:action="@{/registration}">
-        <input type="submit" value="Register" >
-    </form>
-
+    </div>
 </div>
 </body>
 </html>

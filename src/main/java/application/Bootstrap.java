@@ -5,24 +5,36 @@ import entity.Role;
 import entity.Type;
 import entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import repository.RoleRepository;
 import repository.TypeRepository;
-import service.UserService;
+import repository.UserRepository;
+import service.RegimentService;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Component
 public class Bootstrap {
     private RoleRepository roleRepository;
     private TypeRepository typeRepository;
-    private UserService userService;
+    private RegimentService regimentService;
+    private RegimentService userService;
+    private UserRepository userRepository;
+
 
     @Autowired
-    public Bootstrap(RoleRepository roleRepository, UserService userService, TypeRepository typeRepository){
+    public Bootstrap(RoleRepository roleRepository, RegimentService userService, TypeRepository typeRepository, RegimentService regimentService, UserRepository userRepository ){
         this.roleRepository = roleRepository;
         this.typeRepository = typeRepository;
+        this.userRepository = userRepository;
+        this.regimentService = regimentService;
         this.userService = userService;
+
     }
 
     @PostConstruct
@@ -57,7 +69,9 @@ public class Bootstrap {
         UserDto user1 = new UserDto();
         user1.setUsername("QM1@yahoo.com");
         user1.setPassword("aB123456!");
-        userService.register(user1,"Quartermaster");
+        userService.registerAdmin(user1);
+        regimentService.enlistRegiment(123456,"aB123456!");
+
     }
 
 }

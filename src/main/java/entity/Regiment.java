@@ -12,14 +12,33 @@ public class Regiment {
     private int stamina;
     private int strength;
     private int shooting;
-
-
-
     private int intelligence;
+    private int medSkills;
+    private int code;
+
+
+    @OneToOne
+    @JoinColumn(name = "supply_id")
+    private  Supply supply;
+
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
     private Type type;
+
+    public Regiment(){
+        this.intelligence = 10;
+        this.stamina = 20;
+        this.strength = 10;
+        this.shooting = 0;
+        this.medSkills = 0;
+    }
+
+
 
     public int getId() {
         return id;
@@ -67,5 +86,37 @@ public class Regiment {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Supply getSupply() {
+        return supply;
+    }
+
+    public void setSupply(Supply supply) {
+        this.supply = supply;
+    }
+
+    public int getMedSkills() {
+        return medSkills;
+    }
+
+    public void setMedSkills(int medSkills) {
+        this.medSkills = medSkills;
     }
 }

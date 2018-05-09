@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Quartermaster</title>
 </head>
 <body>
+<div align = "right">
+    <form action = "#" th:action="@{/quartermaster}" method = "post">
+        <p><input type="submit" name="logout" value="Log Out" /> </p>
+    </form>
+</div>
+<div class="enlist">
+    <div class="form">
+    <h3>Enlist Regiment</h3>
+        <form action="#" name="addConsultation" th:action="@{/quartermaster}"  method="post">
+            <input type="text" onfocus="this.value=''" placeholder="code" name="code" id="code"/></p>
+            <input type="password" onfocus="this.value=''" placeholder="password" name="password" id="password" /></p>
+            <button name="enlistRegiment">Enlist Regiment</button>
+        </form>
+    </div>
+</div>
 
+<div class="view">
+    <div class="form">
+        <h3>View Regiments</h3>
+        <form action="#" name="showRegiments" th:action="@{/quartermaster/regiments}"  method="post">
+            <button name="showRegiments">Show Regiments</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body>
+<div align = center class="container">
+    <form action="#" th:action="@{/login}" th:object="${userDto}" method="post">
+        <h1>Authentication</h1>
+        <p>Username: <input type="text" onfocus="this.value=''" th:field="*{username}" /></p>
+        <p>Password: <input type="password" onfocus="this.value=''" th:field="*{password}" /></p>
+        <p><input type="submit" name="login" value="Login" /></p>
+        <div align = "center" style="background-color:lightblue">
+            <h4>Validation</h4>
+            <p th:text="${valid}" /></p>
+        </div>
+    </form>
+
+    <form th:action="@{/registration}">
+        <input type="submit" value="Register" >
+    </form>
+
+</div>
+</body>
+</html>

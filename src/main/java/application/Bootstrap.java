@@ -1,21 +1,21 @@
 package application;
 
 import dto.UserDto;
+import entity.Activity;
 import entity.Role;
 import entity.Type;
-import entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import repository.ActivityRepository;
 import repository.RoleRepository;
 import repository.TypeRepository;
 import repository.UserRepository;
 import service.RegimentService;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+
+
+import static application.Constants.*;
 
 
 @Component
@@ -25,14 +25,16 @@ public class Bootstrap {
     private RegimentService regimentService;
     private RegimentService userService;
     private UserRepository userRepository;
+    private ActivityRepository activityRepository;
 
 
     @Autowired
-    public Bootstrap(RoleRepository roleRepository, RegimentService userService, TypeRepository typeRepository, RegimentService regimentService, UserRepository userRepository ){
+    public Bootstrap(RoleRepository roleRepository, RegimentService userService, TypeRepository typeRepository, RegimentService regimentService, UserRepository userRepository, ActivityRepository activityRepository ){
         this.roleRepository = roleRepository;
         this.typeRepository = typeRepository;
         this.userRepository = userRepository;
         this.regimentService = regimentService;
+        this.activityRepository = activityRepository;
         this.userService = userService;
 
     }
@@ -41,6 +43,7 @@ public class Bootstrap {
     private void initialize(){
         initRoles();
         initTypes();
+        initActivities();
         initUsers();
 
     }
@@ -63,6 +66,26 @@ public class Bootstrap {
         typeRepository.save(medics);
         typeRepository.save(engineers);
         typeRepository.save(recruits);
+    }
+
+    private void initActivities(){
+
+        Setup setup = new Setup();
+        Activity eating = new Activity(EATING);
+        Activity sleeping = new Activity(SLEEPING);
+        Activity medTraining = new Activity(MEDTRAINING);
+        Activity shootTraining = new Activity(SHOOTTRAINING);
+        Activity strengthTraining = new Activity(STRENGTHTRAINING);
+        Activity tacticsTraining = new Activity(TACTICSTRAINING);
+
+        activityRepository.save(setup.setupActivity(eating,2,20,5,0,0,0,50,0,0));
+        activityRepository.save(setup.setupActivity(sleeping,8,60,5,0,2,0,0,0,0));
+        activityRepository.save(setup.setupActivity(medTraining,2,-15,0,0,5,20,0,0,35));
+        activityRepository.save(setup.setupActivity(shootTraining,2,-15,10,30,0,0,0,100,10));
+        activityRepository.save(setup.setupActivity(strengthTraining,3,-40,40,0,0,0,0,0,10));
+        activityRepository.save(setup.setupActivity(tacticsTraining,2,-10,0,0,20,0,0,0,5));
+
+
     }
 
     private void initUsers(){

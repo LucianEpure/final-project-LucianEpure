@@ -1,6 +1,7 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Regiment {
@@ -29,6 +30,14 @@ public class Regiment {
     @ManyToOne
     @JoinColumn(name = "type_id")
     private Type type;
+
+    @OneToOne
+    @JoinColumn(name = "schedule_id")
+    private  Schedule schedule;
+
+    @OneToOne
+    @JoinColumn(name = "requirement_id")
+    private Requirement requirement;
 
     public Regiment(){
         this.intelligence = 10;
@@ -118,5 +127,22 @@ public class Regiment {
 
     public void setMedSkills(int medSkills) {
         this.medSkills = medSkills;
+    }
+
+
+    public Requirement getRequirement() {
+        return requirement;
+    }
+
+    public void setRequirement(Requirement requirement) {
+        this.requirement = requirement;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 }

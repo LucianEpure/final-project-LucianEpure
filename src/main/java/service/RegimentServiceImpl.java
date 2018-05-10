@@ -3,10 +3,7 @@ package service;
 
 import application.Constants;
 import dto.UserDto;
-import entity.Regiment;
-import entity.Role;
-import entity.Supply;
-import entity.User;
+import entity.*;
 import entity.builder.UserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,17 +23,19 @@ public class RegimentServiceImpl implements RegimentService {
     private RoleRepository roleRepository;
     private RegimentRepository regimentRepository;
     private TypeRepository typeRepository;
+    private RequirementRepository requirementRepository;
     private SupplyRepository supplyRepository;
     private IValidator validator;
 
 
     @Autowired
-    public RegimentServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RegimentRepository regimentRepository, TypeRepository typeRepository, SupplyRepository supplyRepository){
+    public RegimentServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RegimentRepository regimentRepository, TypeRepository typeRepository, SupplyRepository supplyRepository, RequirementRepository requirementRepository){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.regimentRepository = regimentRepository;
         this.typeRepository = typeRepository;
         this.supplyRepository = supplyRepository;
+        this.requirementRepository = requirementRepository;
     }
 
 
@@ -64,15 +63,18 @@ public class RegimentServiceImpl implements RegimentService {
         }
         else{
             Regiment regiment = new Regiment();
-            regiment.setCode(code);
-            regiment.setType(typeRepository.findByTypeName(Constants.RECRUITS));
+            Requirement requirement= new Requirement();
             User user = new User();
+            Supply supply = new Supply();
+            requirementRepository.save(requirement);
             user.setUsername("RegimentCommander"+code+"@military.com");
             user.setPassword(enc.encode(password));
             List<Role> userRoles = user.getRoles();
             userRoles.add(roleRepository.findByRoleName(Constants.REGIMENTCOMMANDER));
             user.setRoles(userRoles);
-            Supply supply = new Supply();
+            regiment.setCode(code);
+            regiment.setRequirement(requirement);
+            regiment.setType(typeRepository.findByTypeName(Constants.RECRUITS));
             regiment.setUser(user);
             regiment.setSupply(supply);
             supplyRepository.save(supply);

@@ -1,25 +1,18 @@
-package entity;
+package dto;
 
+public class SupplyDto {
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-@Entity
-public class Supply {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int ammunition;
     private int food;
     private int equipment;
 
-    public Supply(){
-        this.ammunition = 500;
-        this.food = 500;
-        this.equipment = 100;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getAmmunition() {
@@ -44,13 +37,5 @@ public class Supply {
 
     public void setEquipment(int equipment) {
         this.equipment = equipment;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

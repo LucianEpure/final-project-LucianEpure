@@ -15,13 +15,13 @@ public class Regiment {
     private int shooting;
     private int intelligence;
     private int medSkills;
+    @Column(unique = true)
     private int code;
 
 
     @OneToOne
     @JoinColumn(name = "supply_id")
     private  Supply supply;
-
 
     @OneToOne
     @JoinColumn(name = "user_id")

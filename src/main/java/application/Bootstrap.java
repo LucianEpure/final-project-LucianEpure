@@ -1,9 +1,9 @@
 package application;
 
+import dto.RequirementDto;
+import dto.SupplyDto;
 import dto.UserDto;
-import entity.Activity;
-import entity.Role;
-import entity.Type;
+import entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import repository.ActivityRepository;
@@ -21,7 +21,7 @@ import static application.Constants.*;
 @Component
 public class Bootstrap {
     private RoleRepository roleRepository;
-    private TypeRepository typeRepository;
+
     private RegimentService regimentService;
     private RegimentService userService;
     private UserRepository userRepository;
@@ -29,9 +29,8 @@ public class Bootstrap {
 
 
     @Autowired
-    public Bootstrap(RoleRepository roleRepository, RegimentService userService, TypeRepository typeRepository, RegimentService regimentService, UserRepository userRepository, ActivityRepository activityRepository ){
+    public Bootstrap(RoleRepository roleRepository, RegimentService userService,  RegimentService regimentService, UserRepository userRepository, ActivityRepository activityRepository ){
         this.roleRepository = roleRepository;
-        this.typeRepository = typeRepository;
         this.userRepository = userRepository;
         this.regimentService = regimentService;
         this.activityRepository = activityRepository;
@@ -56,16 +55,12 @@ public class Bootstrap {
     }
 
     private void initTypes(){
-        Type recruits  = new Type(Constants.RECRUITS);
-        Type infantry = new Type(Constants.INFANTRY);
-        Type assault = new Type(Constants.ASSAULT);
-        Type medics = new Type(Constants.MEDICS);
-        Type engineers = new Type(Constants.ENGINEERS);
-        typeRepository.save(infantry);
-        typeRepository.save(assault);
-        typeRepository.save(medics);
-        typeRepository.save(engineers);
-        typeRepository.save(recruits);
+
+        regimentService.addNewType(INFANTRY);
+        regimentService.addNewType(MEDICS);
+        regimentService.addNewType(ASSAULT);
+        regimentService.addNewType(ENGINEERS);
+        regimentService.addNewType(RECRUITS);
     }
 
     private void initActivities(){

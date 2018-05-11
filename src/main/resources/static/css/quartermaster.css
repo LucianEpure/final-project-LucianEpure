@@ -1,0 +1,29 @@
+
+table {
+        border-collapse: collapse;
+        border: 1px solid black;
+        float: right;
+        margin-right: 0px;
+        margin-left: auto;
+}
+
+.enlist{
+    float: left;
+}
+
+th {
+    height: 50px;
+}
+
+
+
+body {
+  background: #76b852; /* fallback for old browsers */
+  background: -webkit-linear-gradient(right, #2B4324, #8DC26F);
+  background: -moz-linear-gradient(right, #2B4324, #8DC26F);
+  background: -o-linear-gradient(right, #2B4324, #8DC26F);
+  background: linear-gradient(to left, #2B4324, #8DC26F);
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -10,6 +10,7 @@ public class RegimentDto {
     private int code;
     private int typeId;
     private int userId;
+    private int requirementId;
     private int supplyId;
     private int medSkills;
 
@@ -17,6 +18,13 @@ public class RegimentDto {
     private String typeName;
 
 
+    public int getRequirementId() {
+        return requirementId;
+    }
+
+    public void setRequirementId(int requirementId) {
+        this.requirementId = requirementId;
+    }
 
     public int getMedSkills() {
         return medSkills;

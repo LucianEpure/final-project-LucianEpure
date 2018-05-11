@@ -1,10 +1,10 @@
 package converter;
 
 import dto.RegimentDto;
+import dto.RequirementDto;
+import dto.SupplyDto;
 import dto.UserDto;
-import entity.Regiment;
-import entity.Role;
-import entity.User;
+import entity.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,9 +35,32 @@ public class RegimentConverterImpl implements RegimentConverter {
         regimentDto.setStrength(regiment.getShooting());
         regimentDto.setSupplyId(regiment.getSupply().getId());
         regimentDto.setTypeId(regiment.getType().getId());
+        regimentDto.setRequirementId(regiment.getRequirement().getId());
         regimentDto.setMedSkills(regiment.getMedSkills());
         regimentDto.setTypeName(regiment.getType().getTypeName());
 
         return regimentDto;
+    }
+
+    @Override
+    public SupplyDto convertSupplyToDto(Supply supply) {
+        SupplyDto supplyDto = new SupplyDto();
+        supplyDto.setId(supply.getId());
+        supplyDto.setFood(supply.getFood());
+        supplyDto.setAmmunition(supply.getAmmunition());
+        supplyDto.setEquipment(supply.getEquipment());
+        return  supplyDto;
+    }
+
+    @Override
+    public RequirementDto convertRequirementToDto(Requirement requirement) {
+        RequirementDto requirementDto = new RequirementDto();
+        requirementDto.setId(requirement.getId());
+        requirementDto.setRequiredIntelligence(requirement.getRequiredIntelligence());
+        requirementDto.setRequiredMedSkills(requirement.getRequiredMedSkills());
+        requirementDto.setRequiredShooting(requirement.getRequiredShooting());
+        requirementDto.setRequiredStamina(requirement.getRequiredStamina());
+        requirementDto.setRequiredStrength(requirement.getRequiredStrength());
+        return requirementDto;
     }
 }

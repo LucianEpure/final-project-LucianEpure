@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>REGIMENT VIEW</title>
+</head>
+<body>
+<h1>Regiment:<span th:text = "${regimentDto.code}"></span></h1>
+<div class="stats">
+    <h3>Regiment stats</h3>
+    <p>Type: <span th:text = "${regimentDto.typeName}"></span></p>
+    <p>Strength:<span th:text = "${regimentDto.strength}"></span></p>
+    <p>Stamina:<span th:text = "${regimentDto.stamina}"></span></p>
+    <p>Shooting:<span th:text = "${regimentDto.shooting}"></span></p>
+    <p>Intelligence:<span th:text = "${regimentDto.intelligence}"></span></p>
+    <p>Medical skills:<span th:text = "${regimentDto.medSkills}"></span></p>
+</div>
+
+<br>
+<div class="supplies">
+    <h3>Regiment supplies</h3>
+    <p>Food: <span th:text = "${supplyDto.food}"></span></p>
+    <p>Ammunition:<span th:text = "${supplyDto.ammunition}"></span></p>
+    <p>Equipment:<span th:text = "${supplyDto.equipment}"></span></p>
+</div>
+
+<br>
+<div class="requirements">
+    <h3>Regiment requirements</h3>
+    <p>Stamina: <span th:text = "${requirementDto.requiredStamina}"></span></p>
+    <p>Strength:<span th:text = "${requirementDto.requiredStrength}"></span></p>
+    <p>Shooting:<span th:text = "${requirementDto.requiredShooting}"></span></p>
+    <p>Intelligence:<span th:text = "${requirementDto.requiredIntelligence}"></span></p>
+    <p>Medical skills:<span th:text = "${requirementDto.requiredMedSkills}"></span></p>
+</div>
+</body>
+</html>

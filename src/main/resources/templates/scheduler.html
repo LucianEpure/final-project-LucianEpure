@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang = "en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Scheduler</title>
+</head>
+<body>
+<form action="#" name="addActivity" th:action="@{/regimentCommander/schedule}"  method="post">
+<select name ="type"  >
+    <option value="eating">Eating</option>
+    <option value="sleeping">Sleeping</option>
+    <option value="Med Training">Med Training</option>
+    <option value="Shoot Training">Shoot Training</option>
+    <option value="Strength Training">Strength Training</option>
+    <option value="Tactics Training">Tactics Training</option>
+    <option th:each="option : ${options}" th:text="${option}" ></option>
+</select>
+<p><input type="submit" name="addActivity" value="Add Activity" /> </p>
+</form>
+
+<form action="#" name="removeActivity" th:action="@{/regimentCommander/schedule}"  method="post">
+<p><input type="submit" name="removeActivity" value="Remove Activity" /> </p>
+</form>
+
+<form action="#" name="finishSchedule" th:action="@{/regimentCommander/schedule}"  method="post">
+<p><input type="submit" name="finishSchedule" value="Finish Schedule" /> </p>
+</form>
+
+<form action = "#" th:action="@{/regimentCommander}" method = "post">
+    <p><input type="submit" name="logout" value="Log Out" /> </p>
+</form>
+
+<div class="regimentStats">
+    <h3>Regiment stats</h3>
+    <p>Type: <span th:text = "${scheduleReport.typeName}"></span></p>
+    <p>Strength:<span th:text = "${scheduleReport.strength}"></span></p>
+    <p>Stamina:<span th:text = "${scheduleReport.stamina}"></span></p>
+    <p>Shooting:<span th:text = "${scheduleReport.shooting}"></span></p>
+    <p>Intelligence:<span th:text = "${scheduleReport.intelligence}"></span></p>
+    <p>Medical skills:<span th:text = "${scheduleReport.medSkills}"></span></p>
+</div>
+
+<div class="supplyStats">
+    <h3>Supply stats</h3>
+    <p>Food: <span th:text = "${scheduleReport.food}"></span></p>
+    <p>Ammunition:<span th:text = "${scheduleReport.ammunition}"></span></p>
+    <p>Equipment:<span th:text = "${scheduleReport.equipment}"></span></p>
+    </div>
+
+<div class = "showActivities">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Activity name</th>
+            <th>Activity duration</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="activity : ${activities}">
+            <td th:text ="${activity.activityName}"></td>
+            <td th:text ="${activity.duration}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

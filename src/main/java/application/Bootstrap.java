@@ -1,6 +1,7 @@
 package application;
 
 import dto.RequirementDto;
+import dto.ScheduleDto;
 import dto.SupplyDto;
 import dto.UserDto;
 import entity.*;
@@ -11,9 +12,12 @@ import repository.RoleRepository;
 import repository.TypeRepository;
 import repository.UserRepository;
 import service.RegimentService;
+import service.ScheduleService;
 
 import javax.annotation.PostConstruct;
 
+
+import java.util.Date;
 
 import static application.Constants.*;
 
@@ -24,17 +28,17 @@ public class Bootstrap {
 
     private RegimentService regimentService;
     private RegimentService userService;
-    private UserRepository userRepository;
     private ActivityRepository activityRepository;
+    private ScheduleService scheduleService;
 
 
     @Autowired
-    public Bootstrap(RoleRepository roleRepository, RegimentService userService,  RegimentService regimentService, UserRepository userRepository, ActivityRepository activityRepository ){
+    public Bootstrap(RoleRepository roleRepository, RegimentService userService,  RegimentService regimentService,  ActivityRepository activityRepository, ScheduleService scheduleService ){
         this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
         this.regimentService = regimentService;
         this.activityRepository = activityRepository;
         this.userService = userService;
+        this.scheduleService = scheduleService;
 
     }
 
@@ -89,6 +93,10 @@ public class Bootstrap {
         user1.setPassword("aB123456!");
         userService.registerAdmin(user1);
         regimentService.enlistRegiment(123456,"aB123456!");
+        //ScheduleDto scheduleDto = new ScheduleDto();
+
+       // scheduleDto.setDate(new Date());
+       // scheduleService.save(scheduleDto, 123456);
 
     }
 

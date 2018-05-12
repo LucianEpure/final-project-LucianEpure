@@ -19,29 +19,29 @@ public class Regiment {
     private int code;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "supply_id")
     private  Supply supply;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
     private Type type;
-
-    @OneToOne
+/*
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "schedule_id")
     private  Schedule schedule;
-
-    @OneToOne
+*/
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "requirement_id")
     private Requirement requirement;
 
     public Regiment(){
         this.intelligence = 10;
-        this.stamina = 20;
+        this.stamina = 70;
         this.strength = 10;
         this.shooting = 0;
         this.medSkills = 0;
@@ -137,12 +137,12 @@ public class Regiment {
     public void setRequirement(Requirement requirement) {
         this.requirement = requirement;
     }
-
+/*
     public Schedule getSchedule() {
         return schedule;
     }
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
-    }
+    }*/
 }

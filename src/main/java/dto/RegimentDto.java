@@ -13,8 +13,6 @@ public class RegimentDto {
     private int requirementId;
     private int supplyId;
     private int medSkills;
-
-
     private String typeName;
 
 

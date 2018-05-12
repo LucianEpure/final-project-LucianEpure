@@ -11,11 +11,11 @@ public class Constants {
     public static final String ASSAULT = "Assault";
     public static final String RECRUITS = "Recruits";
 
-    public static final String EATING = "eating";
-    public static final String SLEEPING = "sleeping";
-    public static final String MEDTRAINING = "medTraining";
-    public static final String SHOOTTRAINING = "shootTraining";
-    public static final String STRENGTHTRAINING = "strengthTraining";
-    public static final String TACTICSTRAINING = "tatcticsTraining";
+    public static final String EATING = "Eating";
+    public static final String SLEEPING = "Sleeping";
+    public static final String MEDTRAINING = "Med Training";
+    public static final String SHOOTTRAINING = "Shoot Training";
+    public static final String STRENGTHTRAINING = "Strength Training";
+    public static final String TACTICSTRAINING = "Tactics Training";
 
 }

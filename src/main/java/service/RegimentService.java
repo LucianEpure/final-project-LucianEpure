@@ -21,13 +21,7 @@ public interface RegimentService {
 
     RegimentDto findByCode(int code);
 
-    void addMoreSupplies(SupplyDto supplyDto, int regimentCode);
-
-    SupplyDto findSupplies(int supplyId);
-
-    RequirementDto findRequirement(int requirementId);
-
-    void changeRequirements(RequirementDto requirementDto, int regimentCode);
+    RegimentDto update(RegimentDto regimentDto, SupplyDto supplyDto);
 
     Type addNewType(String typeName);
 

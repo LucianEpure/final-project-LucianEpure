@@ -14,7 +14,5 @@ public interface RegimentConverter {
 
     RegimentDto convertRegimentToDto(Regiment regiment);
 
-    SupplyDto convertSupplyToDto(Supply supply);
 
-    RequirementDto convertRequirementToDto(Requirement requirement);
 }

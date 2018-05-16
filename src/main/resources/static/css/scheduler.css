@@ -1,22 +1,21 @@
-
-table {
-        border-collapse: collapse;
-        border: 1px solid black;
-        float: right;
-        margin-right: 0px;
-        margin-left: auto;
-}
-
-.actions{
+.leftpart{
     float: left;
     margin-left: 0px;
 }
 
-th {
-    height: 50px;
+.showActivities{
+   float: right;
+   margin-right: 0px;
+   margin-left: auto;
 }
 
+.requirements {
+    display: none;
+}
 
+a:hover + .requirements {
+    display: block;
+}
 
 body {
   background: #76b852; /* fallback for old browsers */

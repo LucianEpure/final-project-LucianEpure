@@ -1,17 +1,18 @@
 package service;
 
 import converter.ScheduleConverter;
-import dto.ActivityDto;
-import dto.RegimentDto;
-import dto.ScheduleDto;
-import dto.ScheduleReport;
+import dto.*;
 import entity.Activity;
+import entity.Regiment;
 import entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.ActivityRepository;
 import repository.RegimentRepository;
 import repository.ScheduleRepository;
+import validators.IValidator;
+import validators.Notification;
+import validators.ScheduleValidator;
 
 import javax.xml.ws.soap.Addressing;
 import java.util.ArrayList;
@@ -21,25 +22,29 @@ import java.util.List;
 public class ScheduleServiceImpl implements ScheduleService {
 
     private RegimentRepository regimentRepository;
+    private RegimentService regimentService;
     private ScheduleRepository scheduleRepository;
     private ActivityRepository activityRepository;
     private ScheduleConverter scheduleConverter;
+    private ScheduleReportService scheduleReportService;
 
 
     @Autowired
-    public ScheduleServiceImpl(RegimentRepository regimentRepository, ScheduleRepository scheduleRepository, ScheduleConverter scheduleConverter, ActivityRepository activityRepository){
+    public ScheduleServiceImpl(RegimentRepository regimentRepository, ScheduleRepository scheduleRepository, ScheduleConverter scheduleConverter, ActivityRepository activityRepository, ScheduleReportService scheduleReportService, RegimentService regimentService){
         this.regimentRepository = regimentRepository;
         this.scheduleRepository = scheduleRepository;
         this.scheduleConverter = scheduleConverter;
         this.activityRepository = activityRepository;
+        this.scheduleReportService = scheduleReportService;
+        this.regimentService = regimentService;
     }
 
     @Override
-    public ScheduleDto save(ScheduleDto scheduleDto, int regimentCode) {
+    public ScheduleDto save(ScheduleDto scheduleDto) {
 
         Schedule schedule = new Schedule();
         schedule.setDate(scheduleDto.getDate());
-        schedule.setRegiment(regimentRepository.findByCode(regimentCode));
+        schedule.setRegiment(regimentRepository.findByCode(scheduleDto.getRegimentCode()));
         schedule = scheduleRepository.save(schedule);
         ScheduleDto scheduleDto1 = scheduleConverter.convertScheduleToDto(schedule);
         ScheduleReport scheduleReport = new ScheduleReport();
@@ -48,25 +53,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return  scheduleDto1;
     }
 
-    public ScheduleReport updateStats(ScheduleReport scheduleReport, ActivityDto activity){
 
-        scheduleReport.setMedSkills(scheduleReport.getMedSkills()+activity.getMedSkillChange());
-        scheduleReport.setIntelligence(scheduleReport.getIntelligence()+activity.getIntelligenceChange());
-        scheduleReport.setStrength(scheduleReport.getStrength()+activity.getStrengthChange());
-        scheduleReport.setStamina(scheduleReport.getStamina()+activity.getStaminaChange());
-        scheduleReport.setShooting(scheduleReport.getShooting()+activity.getShootingChange());
-        scheduleReport.setAmmunition(scheduleReport.getAmmunition()-activity.getAmmunitionCost());
-        scheduleReport.setFood(scheduleReport.getFood()-activity.getFoodCost());
-        scheduleReport.setEquipment(scheduleReport.getEquipment()-activity.getEquipmentCost());
-        return scheduleReport;
-    }
+
+
     @Override
     public ScheduleDto addActivity(ScheduleDto scheduleDto, ActivityDto activity){
         List<ActivityDto> activities = scheduleDto.getActivities();
         activities.add(activity);
         scheduleDto.setActivities(activities);
        // RegimentDto regimentStats = updateStats(scheduleDto.getRegimentStats(),activity);
-        scheduleDto.setScheduleReport(updateStats(scheduleDto.getScheduleReport(),activity));
+        scheduleDto.setScheduleReport(scheduleReportService.updateStats(scheduleDto.getScheduleReport(),activity,"add"));
         return scheduleDto;
     }
     @Override
@@ -75,23 +71,41 @@ public class ScheduleServiceImpl implements ScheduleService {
         ActivityDto activity = activities.get(activities.size()-1);
         activities.remove(activities.size()-1);
         scheduleDto.setActivities(activities);
-       // RegimentDto regimentStats = updateStats(scheduleDto.getRegimentStats(),activity);
-        //scheduleDto.setRegimentStats(regimentStats);
+       // RegimentDto regimentStats = updateStats(scheduleDto.getRegimentStats(),activity,"remove");
+        scheduleDto.setScheduleReport(scheduleReportService.updateStats(scheduleDto.getScheduleReport(),activity,"remove"));
         return scheduleDto;
     }
 
     @Override
-    public ScheduleDto update(ScheduleDto scheduleDto) {
-        Schedule schedule = new Schedule();
-        schedule.setId(scheduleDto.getId());
-        schedule.setRegiment(regimentRepository.getOne(scheduleDto.getRegimentId()));
-        schedule.setDate(scheduleDto.getDate());
-        List<Activity> activities = new ArrayList<Activity>();
-        for(ActivityDto activityDto:scheduleDto.getActivities()){
-            activities.add(scheduleConverter.convertActivityFromDto(activityDto));
+    public Notification<Boolean> update(ScheduleDto scheduleDto) {
+
+        IValidator validator = new ScheduleValidator(scheduleDto);
+        boolean scheduleValid = validator.validate();
+        Notification<Boolean> scheduleNotification = new Notification<Boolean>();
+        if(!scheduleValid){
+            validator.getErrors().forEach(scheduleNotification::addError );
+            scheduleNotification.setResult(Boolean.FALSE);
         }
-        schedule.setActivities(activities);
-        return scheduleConverter.convertScheduleToDto(scheduleRepository.save(schedule));
+        else{
+            Schedule schedule = new Schedule();
+            schedule.setId(scheduleDto.getId());
+            schedule.setRegiment(regimentRepository.getOne(scheduleDto.getRegimentId()));
+            schedule.setDate(scheduleDto.getDate());
+            List<Activity> activities = new ArrayList<Activity>();
+            for(ActivityDto activityDto:scheduleDto.getActivities()){
+                activities.add(scheduleConverter.convertActivityFromDto(activityDto));
+            }
+            schedule.setActivities(activities);
+
+            RegimentDto regimentDto = scheduleReportService.retrieveRegiment(scheduleDto.getScheduleReport());
+            SupplyDto supplyDto = scheduleReportService.retrieveSupply(scheduleDto.getScheduleReport());
+
+            scheduleRepository.save(schedule);
+            regimentService.update(regimentDto,supplyDto);
+            scheduleNotification.setResult(Boolean.TRUE);
+        }
+
+        return scheduleNotification;
     }
 
 

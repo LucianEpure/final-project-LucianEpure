@@ -3,32 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Scheduler</title>
+    <link th:href="@{/css/scheduler.css}" rel="Stylesheet">
 </head>
 <body>
-<form action="#" name="addActivity" th:action="@{/regimentCommander/schedule}"  method="post">
-<select name ="type"  >
-    <option value="eating">Eating</option>
-    <option value="sleeping">Sleeping</option>
-    <option value="Med Training">Med Training</option>
-    <option value="Shoot Training">Shoot Training</option>
-    <option value="Strength Training">Strength Training</option>
-    <option value="Tactics Training">Tactics Training</option>
-    <option th:each="option : ${options}" th:text="${option}" ></option>
-</select>
-<p><input type="submit" name="addActivity" value="Add Activity" /> </p>
-</form>
+<div align = "left"  style="background-color:lightblue">
+    <h4>Validation</h4>
+    <p th:text="${valid}" /></p>
+</div>
+<div class = "leftpart">
 
-<form action="#" name="removeActivity" th:action="@{/regimentCommander/schedule}"  method="post">
-<p><input type="submit" name="removeActivity" value="Remove Activity" /> </p>
-</form>
-
-<form action="#" name="finishSchedule" th:action="@{/regimentCommander/schedule}"  method="post">
-<p><input type="submit" name="finishSchedule" value="Finish Schedule" /> </p>
-</form>
-
-<form action = "#" th:action="@{/regimentCommander}" method = "post">
-    <p><input type="submit" name="logout" value="Log Out" /> </p>
-</form>
 
 <div class="regimentStats">
     <h3>Regiment stats</h3>
@@ -40,28 +23,67 @@
     <p>Medical skills:<span th:text = "${scheduleReport.medSkills}"></span></p>
 </div>
 
-<div class="supplyStats">
-    <h3>Supply stats</h3>
-    <p>Food: <span th:text = "${scheduleReport.food}"></span></p>
-    <p>Ammunition:<span th:text = "${scheduleReport.ammunition}"></span></p>
-    <p>Equipment:<span th:text = "${scheduleReport.equipment}"></span></p>
+    <div class="supplyStats">
+        <h3>Supply stats</h3>
+        <p>Food: <span th:text = "${scheduleReport.food}"></span></p>
+        <p>Ammunition:<span th:text = "${scheduleReport.ammunition}"></span></p>
+        <p>Equipment:<span th:text = "${scheduleReport.equipment}"></span></p>
+    </div>
+    <div class = "duration">
+        <p>Duration: <span th:text = "${scheduleReport.duration}"></span></p>
+    </div>
+</div>
+
+
+
+    <div class = "showActivities">
+
+        <form action="#" name="addActivity" th:action="@{/regimentCommander/schedule}"  method="post">
+            <select name ="type"  >
+                <option value="eating">Eating</option>
+                <option value="sleeping">Sleeping</option>
+                <option value="Med Training">Med Training</option>
+                <option value="Shoot Training">Shoot Training</option>
+                <option value="Strength Training">Strength Training</option>
+                <option value="Tactics Training">Tactics Training</option>
+                <option th:each="option : ${options}" th:text="${option}" ></option>
+            </select>
+            <p><input type="submit" name="addActivity" value="Add Activity" /> </p>
+        </form>
+
+        <form action="#" name="removeActivity" th:action="@{/regimentCommander/schedule}"  method="post">
+            <p><input type="submit" name="removeActivity" value="Remove Activity" /> </p>
+        </form>
+
+        <form action="#" name="finishSchedule" th:action="@{/regimentCommander/schedule}"  method="post">
+            <p><input type="submit" name="finishSchedule" value="Finish Schedule" onclick="return confirm ('Are you sure?')"/> </p>
+        </form>
+
+        <form action = "#" th:action="@{/regimentCommander}" method = "post">
+            <p><input type="submit" name="logout" value="Log Out" /> </p>
+        </form>
+        <table border="1">
+            <thead>
+             <tr>
+                 <th>Activity name</th>
+                 <th>Activity duration</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="activity : ${activities}">
+                <td th:text ="${activity.activityName}"></td>
+                <td th:text ="${activity.duration}"></td>
+            </tr>
+            </tbody>
+    </table>
+        <a>Hover over me!</a>
+        <div class="requirements">
+            <p>Req Stamina: <span th:text = "${requirementDto.requiredStamina}"></span></p>
+            <p>Req Strength:<span th:text = "${requirementDto.requiredStrength}"></span></p>
+            <p>Req Intelligence:<span th:text = "${requirementDto.requiredIntelligence}"></span></p>
+            <p>Req Shooting:<span th:text = "${requirementDto.requiredShooting}"></span></p>
+            <p>Req Medical skills:<span th:text = "${requirementDto.requiredMedSkills}"></span></p>
     </div>
 
-<div class = "showActivities">
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Activity name</th>
-            <th>Activity duration</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="activity : ${activities}">
-            <td th:text ="${activity.activityName}"></td>
-            <td th:text ="${activity.duration}"></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 </body>
 </html>

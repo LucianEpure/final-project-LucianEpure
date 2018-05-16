@@ -18,4 +18,9 @@ public class Constants {
     public static final String STRENGTHTRAINING = "Strength Training";
     public static final String TACTICSTRAINING = "Tactics Training";
 
+    public static final int MEDIC_UPGRADE_TRESHOLD = 300;
+    public static final int ASSAULT_UPGRADE_TRESHOLD = 300;
+    public static final int ENGINEER_UPGRADE_THRESHOLD = 400;
+    public static final int INFANTRY_UPGRADE_THRESHOLD = 400;
+
 }

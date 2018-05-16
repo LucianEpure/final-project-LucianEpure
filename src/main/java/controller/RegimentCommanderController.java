@@ -46,7 +46,8 @@ public class RegimentCommanderController {
     scheduleDto.setDate(new Date());
     String username = principal.getName();
     String regimentCode = username.replaceAll("[^0-9]","");
-    scheduleDto = scheduleService.save(scheduleDto,Integer.parseInt(regimentCode));
+    scheduleDto.setRegimentCode(Integer.parseInt(regimentCode));
+    scheduleDto = scheduleService.save(scheduleDto);
     session.setAttribute("scheduleDto",scheduleDto);
     return "redirect:/regimentCommander/schedule";
     }

@@ -1,9 +1,6 @@
 package controller;
 
-import dto.ActivityDto;
-import dto.RegimentDto;
-import dto.ScheduleDto;
-import dto.ScheduleReport;
+import dto.*;
 import entity.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -13,11 +10,15 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import service.RegimentService;
+import service.RequirementService;
 import service.ScheduleService;
+import validators.Notification;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -25,18 +26,29 @@ import java.util.List;
 public class ScheduleController {
 
     private ScheduleService scheduleService;
+    private RegimentService regimentService;
+    private RequirementService requirementService;
 
     @Autowired
-    public ScheduleController(ScheduleService scheduleService){
+    public ScheduleController(ScheduleService scheduleService, RegimentService regimentService, RequirementService requirementService){
+        this.regimentService = regimentService;
         this.scheduleService = scheduleService;
+        this.requirementService = requirementService;
     }
     @GetMapping
     @Order(value = 1)
-    public String displayMenu(Model model, HttpSession session) {
+    public String displayMenu(Principal principal, Model model, HttpSession session) {
 
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
+        String valid = (String) session.getAttribute("valid");
         ScheduleReport scheduleReport = scheduleDto.getScheduleReport();
         List<ActivityDto> activities = scheduleDto.getActivities();
+        String username = principal.getName();
+        String regimentCode = username.replaceAll("[^0-9]","");
+        RegimentDto regimentDto = regimentService.findByCode(Integer.parseInt(regimentCode));
+        RequirementDto requirementDto = requirementService.findRequirement(regimentDto.getRequirementId());
+        model.addAttribute("requirementDto",requirementDto);
+        model.addAttribute("valid",valid);
         model.addAttribute("activities",activities);
         model.addAttribute("scheduleReport",scheduleReport);
 
@@ -48,6 +60,7 @@ public class ScheduleController {
         ActivityDto activityDto = scheduleService.findActivityByName(type);
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
         scheduleService.addActivity(scheduleDto,activityDto);
+        session.setAttribute("valid", "");
         return "redirect:/regimentCommander/schedule";
     }
 
@@ -55,14 +68,25 @@ public class ScheduleController {
     public String removeActivity( Model model, HttpSession session){
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
         scheduleService.removeActivity(scheduleDto);
+        session.setAttribute("valid", "");
         return "redirect:/regimentCommander/schedule";
     }
 
     @PostMapping(params = "finishSchedule")
-    public String finishSchedule( HttpSession session){
+    public String finishSchedule( @ModelAttribute ScheduleReport scheduleRep, HttpSession session,Model model){
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
-        scheduleService.update(scheduleDto);
-        return "redirect:/regimentCommander";
+        Notification notification = scheduleService.update(scheduleDto);
+        if(notification.hasErrors())
+        {
+            session.setAttribute("valid", notification.getFormattedErrors());
+            return "redirect:/regimentCommander/schedule";
+        }
+
+        else{
+
+            return "redirect:/regimentCommander";
+        }
+
     }
 
     @PostMapping(params="logout")

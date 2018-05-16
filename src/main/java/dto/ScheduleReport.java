@@ -12,6 +12,8 @@ public class ScheduleReport {
     private int shooting;
     private int medSkills;
     private int code;
+
+    private int typeId;
     private String typeName;
 
     private int ammunition;
@@ -30,11 +32,29 @@ public class ScheduleReport {
         this.medSkills = regiment.getMedSkills();
         this.code = regiment.getCode();
         this.typeName = regiment.getType().getTypeName();
+        this.typeId = regiment.getType().getId();
         this.food = supply.getFood();
         this.ammunition = supply.getAmmunition();
         this.equipment = supply.getEquipment();
         this.duration = 0;
         return this;
+    }
+
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public int getMedSkills() {

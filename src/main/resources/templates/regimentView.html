@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>REGIMENT VIEW</title>
+    <link th:href="@{/css/regimentView.css}" rel="Stylesheet" type="text/css"/>
 </head>
 <body>
 <h1>Regiment:<span th:text = "${regimentDto.code}"></span></h1>
 <div class="stats">
     <h3>Regiment stats</h3>
-    <p>Type: <span th:text = "${regimentDto.typeName}"></span></p>
-    <p>Strength:<span th:text = "${regimentDto.strength}"></span></p>
+    <p>Type: <span  th:text = "${regimentDto.typeName}"></span></p>
+    <p>Strength:<span name = "strength" th:text = "${regimentDto.strength}"></span></p>
     <p>Stamina:<span th:text = "${regimentDto.stamina}"></span></p>
     <p>Shooting:<span th:text = "${regimentDto.shooting}"></span></p>
     <p>Intelligence:<span th:text = "${regimentDto.intelligence}"></span></p>

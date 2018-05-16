@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import repository.RegimentRepository;
 import service.RegimentService;
+import service.RequirementService;
+import service.SupplyService;
 import validators.Notification;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +30,14 @@ import java.util.List;
 public class QuartermasterController {
 
     private RegimentService regimentService;
+    private SupplyService supplyService;
+    private RequirementService requirementService;
 
     @Autowired
-    public QuartermasterController(RegimentService regimentService){
+    public QuartermasterController(RegimentService regimentService, SupplyService supplyService, RequirementService requirementService){
         this.regimentService = regimentService;
+        this.supplyService = supplyService;
+        this.requirementService = requirementService;
     }
 
     @GetMapping
@@ -47,8 +53,8 @@ public class QuartermasterController {
     @PostMapping(value = "/showRegiments/{regimentCode}")
     public String showReg(@ModelAttribute RequirementDto requirementDto,@ModelAttribute SupplyDto supplyDto, Model model,@PathVariable(value = "regimentCode") int regimentCode){
         RegimentDto regimentDto = regimentService.findByCode(regimentCode);
-        supplyDto = regimentService.findSupplies(regimentDto.getSupplyId());
-        requirementDto = regimentService.findRequirement(regimentDto.getRequirementId());
+        supplyDto = supplyService.findSupplies(regimentDto.getSupplyId());
+        requirementDto = requirementService.findRequirement(regimentDto.getRequirementId());
         model.addAttribute("regimentDto",regimentDto);
         model.addAttribute("supplyDto", supplyDto);
         model.addAttribute("requirementDto", requirementDto);
@@ -76,13 +82,13 @@ public class QuartermasterController {
 
     @PostMapping(params = "setRequirements")
     public String setRequirements(Model model,@ModelAttribute RequirementDto requirementDto, @RequestParam("requirementRegimentCode") String requirementRegimentCode){
-        regimentService.changeRequirements(requirementDto,Integer.parseInt(requirementRegimentCode));
+        requirementService.changeRequirements(requirementDto,Integer.parseInt(requirementRegimentCode));
         return "redirect:/quartermaster";
     }
 
     @PostMapping(params = "addSupplies")
     public String addSupplies(Model model, @ModelAttribute SupplyDto supplyDto, @RequestParam("supplyRegimentCode") String supplyRegimentCode){
-        regimentService.addMoreSupplies(supplyDto,Integer.parseInt(supplyRegimentCode));
+        supplyService.addMoreSupplies(supplyDto,Integer.parseInt(supplyRegimentCode));
         return "redirect:/quartermaster";
     }
 

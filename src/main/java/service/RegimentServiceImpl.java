@@ -103,38 +103,28 @@ public class RegimentServiceImpl implements RegimentService {
     }
 
     @Override
-    public void addMoreSupplies(SupplyDto supplyDto, int regimentCode) {
+    public RegimentDto update(RegimentDto regimentDto, SupplyDto supplyDto) {
+        int regimentCode = regimentDto.getCode();
         Regiment regiment = regimentRepository.findByCode(regimentCode);
         Supply supply = regiment.getSupply();
-        supply.setAmmunition(supply.getAmmunition()+supplyDto.getAmmunition());
-        supply.setEquipment(supply.getEquipment()+supplyDto.getEquipment());
-        supply.setFood(supply.getFood()+supplyDto.getFood());
+
+
+        supply.setFood(supplyDto.getFood());
+        supply.setAmmunition(supplyDto.getAmmunition());
+        supply.setEquipment(supplyDto.getEquipment());
         supplyRepository.save(supply);
+
+        regiment.setStamina(regimentDto.getStamina());
+        regiment.setStrength(regimentDto.getStrength());
+        regiment.setShooting(regimentDto.getShooting());
+        regiment.setIntelligence(regimentDto.getIntelligence());
+        regiment.setMedSkills(regimentDto.getMedSkills());
+        regiment.setType(typeRepository.findByTypeName(regimentDto.getTypeName()));
+        regiment.setSupply(supply);
+        return regimentConverter.convertRegimentToDto(regimentRepository.save(regiment));
+
     }
 
-    @Override
-    public SupplyDto findSupplies(int supplyId) {
-        Supply supply = supplyRepository.getOne(supplyId);
-        return regimentConverter.convertSupplyToDto(supply);
-    }
-
-    @Override
-    public RequirementDto findRequirement(int requirementId) {
-        Requirement requirement =requirementRepository.getOne(requirementId);
-        return regimentConverter.convertRequirementToDto(requirement);
-    }
-
-    @Override
-    public void changeRequirements(RequirementDto requirementDto, int regimentCode) {
-        Regiment regiment = regimentRepository.findByCode(regimentCode);
-        Requirement requirement = regiment.getRequirement();
-        requirement.setRequiredIntelligence(requirementDto.getRequiredIntelligence());
-        requirement.setRequiredMedSkills(requirementDto.getRequiredMedSkills());
-        requirement.setRequiredShooting(requirementDto.getRequiredShooting());
-        requirement.setRequiredStamina(requirementDto.getRequiredStamina());
-        requirement.setRequiredStrength(requirementDto.getRequiredStrength());
-        requirementRepository.save(requirement);
-    }
 
     @Override
     public Type addNewType(String typeName) {

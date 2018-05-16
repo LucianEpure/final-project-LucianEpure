@@ -3,11 +3,12 @@ package service;
 import dto.ActivityDto;
 import dto.ScheduleDto;
 import entity.Activity;
+import validators.Notification;
 
 public interface ScheduleService {
 
 
-    ScheduleDto save (ScheduleDto scheduleDto, int regimentCode);
+    ScheduleDto save (ScheduleDto scheduleDto);
 
     ActivityDto findActivityByName(String activityName);
 
@@ -15,6 +16,6 @@ public interface ScheduleService {
 
     ScheduleDto removeActivity(ScheduleDto scheduleDto);
 
-   ScheduleDto update(ScheduleDto scheduleDto);
+   Notification<Boolean> update(ScheduleDto scheduleDto);
 
 }

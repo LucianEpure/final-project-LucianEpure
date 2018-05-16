@@ -24,6 +24,7 @@ public class UserValidator implements IValidator{
         errors = new ArrayList<String>();
     }
 
+    @Override
     public boolean validate() {
         validateUsername(user.getUsername());
         validatePassword(user.getPassword());

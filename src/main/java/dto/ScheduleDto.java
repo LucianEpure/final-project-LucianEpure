@@ -11,6 +11,7 @@ public class ScheduleDto {
     private int id;
     private Date date;
     private int regimentId;
+    private int regimentCode;
     private ScheduleReport scheduleReport;
     private List<ActivityDto> activities;
 
@@ -28,6 +29,14 @@ public class ScheduleDto {
     public ScheduleDto() {
         this.scheduleReport = new ScheduleReport();
         this.activities = new ArrayList<ActivityDto>();
+    }
+
+    public int getRegimentCode() {
+        return regimentCode;
+    }
+
+    public void setRegimentCode(int regimentCode) {
+        this.regimentCode = regimentCode;
     }
 
     public int getId() {

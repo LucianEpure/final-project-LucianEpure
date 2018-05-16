@@ -20,6 +20,8 @@ public class ScheduleConverterImpl implements ScheduleConverter{
         scheduleDto.setId(schedule.getId());
         scheduleDto.setDate(schedule.getDate());
         scheduleDto.setRegimentId(schedule.getRegiment().getId());
+        //scheduleDto.setRegimentStats(regimentConverter.convertRegimentToDto(schedule.getRegiment()));
+        //System.out.println("REGIMEEEEEEEEEENT"+ scheduleDto.getRegimentStats().getTypeName());
 
         return scheduleDto;
     }

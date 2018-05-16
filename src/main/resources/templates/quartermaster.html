@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Quartermaster</title>
-    <link href="css/quartermaster.css" rel="Stylesheet">
+    <link th:href="@{/css/quartermaster.css}" rel="Stylesheet">
 </head>
 <body>
 
@@ -51,6 +51,7 @@
         </tbody>
     </table>
 </div>
+<div class="actions">
 <div class="enlist">
     <div class="form">
     <h3>Enlist Regiment</h3>
@@ -62,14 +63,7 @@
     </div>
 </div>
 
-<div class="view">
-    <div class="form">
-        <h3>View Regiments</h3>
-        <form action="#" name="showRegiments" th:action="@{/quartermaster/regiments}"  method="post">
-            <button name="showRegiments">Show Regiments</button>
-        </form>
-    </div>
-</div>
+
 
 <div class="sendToWar">
     <div class="form">
@@ -105,13 +99,14 @@
     <div class="form">
         <h3>Add More Supplies</h3>
         <form action="#"  autocomplete="off"  name="addSupplies" th:action="@{/quartermaster}"    method="post">
-            <input type="text"  onfocus="this.value=''" placeholder="regiment code" name="supplyRegimentCode" id="supplyRegimentCode" /></p>
-            <input type="text" th:field="*{supplyDto.food}" onfocus="this.value=''" placeholder="food" value="none"  name="food" id="food" /></p>
-            <input type="text" th:field="*{supplyDto.ammunition}"  onfocus="this.value=''" placeholder="ammunition" name="ammunition" id="ammunition" /></p>
+           <p> <input type="text"  onfocus="this.value=''" placeholder="regiment code" name="supplyRegimentCode" id="supplyRegimentCode" />
+            <input type="text" th:field="*{supplyDto.food}" onfocus="this.value=''" placeholder="food" value="none"  name="food" id="food" />
+            <input type="text" th:field="*{supplyDto.ammunition}"  onfocus="this.value=''" placeholder="ammunition" name="ammunition" id="ammunition" />
             <input type="text" th:field="*{supplyDto.equipment}" onfocus="this.value=''" placeholder="equipment" name="equipment" id="equipment" /></p>
-            <button name="addSupplies" onclick="return confirm ('Are you sure?')">Add more supplies</button>
+        <button name="addSupplies" onclick="return confirm ('Are you sure?')">Add more supplies</button>
         </form>
     </div>
+</div>
 </div>
 </body>
 </html>

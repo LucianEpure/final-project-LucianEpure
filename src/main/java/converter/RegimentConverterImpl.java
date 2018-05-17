@@ -32,7 +32,7 @@ public class RegimentConverterImpl implements RegimentConverter {
         regimentDto.setIntelligence(regiment.getIntelligence());
         regimentDto.setStamina(regiment.getStamina());
         regimentDto.setStrength(regiment.getStrength());
-        regimentDto.setStrength(regiment.getShooting());
+        regimentDto.setShooting(regiment.getShooting());
         regimentDto.setSupplyId(regiment.getSupply().getId());
         regimentDto.setTypeId(regiment.getType().getId());
         regimentDto.setRequirementId(regiment.getRequirement().getId());

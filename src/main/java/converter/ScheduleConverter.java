@@ -9,7 +9,5 @@ public interface ScheduleConverter {
 
     public ScheduleDto convertScheduleToDto(Schedule schedule);
 
-    public ActivityDto convertActivityToDto(Activity activity);
 
-    public Activity convertActivityFromDto(ActivityDto activityDto);
 }

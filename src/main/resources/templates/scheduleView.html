@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class = "showSchedules">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Regiment Code</th>
+            <th>Date</th>
+            <th>Activities</th>
+            <th>Approve</th>
+            <th>Status</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="schedule : ${schedules}">
+            <td th:text ="${schedule.id}"></td>
+            <td th:text="${schedule.regimentCode}"></td>
+            <td th:text="${schedule.date}"></td>
+            <td th:text="${schedule.activityNames}"></td>
+            <td th:text="${schedule.approved}"></td>
+            <td>
+                <p><form action="#" name="review" th:action="@{'/quartermaster/showSchedules/'+${schedule.id}}"  method="post">
+                    <button name="approve">Approve</button>
+                    <button name="deny">Deny</button>
+                </form></p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

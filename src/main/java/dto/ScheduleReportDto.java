@@ -3,7 +3,7 @@ package dto;
 import entity.Regiment;
 import entity.Supply;
 
-public class ScheduleReport {
+public class ScheduleReportDto {
 
 
     private int stamina;
@@ -23,7 +23,7 @@ public class ScheduleReport {
     private int duration;
 
 
-    public ScheduleReport init(Regiment regiment, Supply supply){
+    public ScheduleReportDto init(RegimentDto regiment, SupplyDto supply){
 
         this.stamina = regiment.getStamina();
         this.strength = regiment.getStrength();
@@ -31,8 +31,8 @@ public class ScheduleReport {
         this.shooting = regiment.getShooting();
         this.medSkills = regiment.getMedSkills();
         this.code = regiment.getCode();
-        this.typeName = regiment.getType().getTypeName();
-        this.typeId = regiment.getType().getId();
+        this.typeName = regiment.getTypeName();
+        this.typeId = regiment.getTypeId();
         this.food = supply.getFood();
         this.ammunition = supply.getAmmunition();
         this.equipment = supply.getEquipment();

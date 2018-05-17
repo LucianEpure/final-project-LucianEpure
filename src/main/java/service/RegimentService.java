@@ -16,7 +16,7 @@ public interface RegimentService {
     void registerAdmin(UserDto userDto);
 
     Notification<Boolean> enlistRegiment(int code, String password);
-   // Notification<Boolean> enlistRegiment(RegimentDto regiment);
+
     void removeRegiment(int code);
 
     RegimentDto findByCode(int code);

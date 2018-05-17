@@ -3,6 +3,7 @@ package controller;
 import converter.RegimentConverter;
 import dto.RegimentDto;
 import dto.RequirementDto;
+import dto.ScheduleDto;
 import dto.SupplyDto;
 import entity.Regiment;
 import entity.Supply;
@@ -17,12 +18,17 @@ import org.springframework.web.bind.annotation.*;
 import repository.RegimentRepository;
 import service.RegimentService;
 import service.RequirementService;
+import service.ScheduleService;
 import service.SupplyService;
 import validators.Notification;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -32,12 +38,14 @@ public class QuartermasterController {
     private RegimentService regimentService;
     private SupplyService supplyService;
     private RequirementService requirementService;
+    private ScheduleService scheduleService;
 
     @Autowired
-    public QuartermasterController(RegimentService regimentService, SupplyService supplyService, RequirementService requirementService){
+    public QuartermasterController(RegimentService regimentService, SupplyService supplyService, RequirementService requirementService, ScheduleService scheduleService){
         this.regimentService = regimentService;
         this.supplyService = supplyService;
         this.requirementService = requirementService;
+        this.scheduleService = scheduleService;
     }
 
     @GetMapping
@@ -90,6 +98,19 @@ public class QuartermasterController {
     public String addSupplies(Model model, @ModelAttribute SupplyDto supplyDto, @RequestParam("supplyRegimentCode") String supplyRegimentCode){
         supplyService.addMoreSupplies(supplyDto,Integer.parseInt(supplyRegimentCode));
         return "redirect:/quartermaster";
+    }
+
+    @PostMapping(value = "/showSchedules", params = "showSchedules")
+    public String showSchedules(@RequestParam("scheduleDate") String date, Model model, HttpSession session){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date parsedDate = formatter.parse(date);
+            session.setAttribute("scheduleDate",parsedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/quartermaster/showSchedules";
     }
 
 

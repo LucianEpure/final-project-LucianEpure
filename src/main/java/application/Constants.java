@@ -23,4 +23,9 @@ public class Constants {
     public static final int ENGINEER_UPGRADE_THRESHOLD = 400;
     public static final int INFANTRY_UPGRADE_THRESHOLD = 400;
 
+    public static final String WAITING_APPROVAL = "Waiting";
+    public static final String APPROVED = "Approved";
+    public static final String DENIED = "Denied";
+
+
 }

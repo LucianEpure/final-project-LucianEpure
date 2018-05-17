@@ -1,9 +1,8 @@
 package service;
 
-import application.Constants;
 import dto.ActivityDto;
 import dto.RegimentDto;
-import dto.ScheduleReport;
+import dto.ScheduleReportDto;
 import dto.SupplyDto;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import static application.Constants.*;
 @Service
 public class ScheduleReportServiceImpl implements ScheduleReportService {
     @Override
-    public ScheduleReport updateStats(ScheduleReport scheduleReport, ActivityDto activity, String type) {
+    public ScheduleReportDto updateStats(ScheduleReportDto scheduleReport, ActivityDto activity, String type) {
         if(type.equalsIgnoreCase("add")){
             scheduleReport.setMedSkills(scheduleReport.getMedSkills()+activity.getMedSkillChange());
             scheduleReport.setIntelligence(scheduleReport.getIntelligence()+activity.getIntelligenceChange());
@@ -42,7 +41,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
     }
 
     @Override
-    public RegimentDto retrieveRegiment(ScheduleReport scheduleReport) {
+    public RegimentDto retrieveRegiment(ScheduleReportDto scheduleReport) {
         RegimentDto regimentDto = new RegimentDto();
         regimentDto.setCode(scheduleReport.getCode());
         regimentDto.setStrength(scheduleReport.getStrength());
@@ -55,7 +54,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
     }
 
     @Override
-    public SupplyDto retrieveSupply(ScheduleReport scheduleReport) {
+    public SupplyDto retrieveSupply(ScheduleReportDto scheduleReport) {
         SupplyDto supplyDto = new SupplyDto();
         supplyDto.setEquipment(scheduleReport.getEquipment());
         supplyDto.setAmmunition(scheduleReport.getAmmunition());
@@ -63,7 +62,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
         return  supplyDto;
     }
 
-    private void upgradeUnit(ScheduleReport scheduleReport){
+    private void upgradeUnit(ScheduleReportDto scheduleReport){
         if(scheduleReport.getTypeName().equalsIgnoreCase(RECRUITS)){
             if(scheduleReport.getMedSkills()>= MEDIC_UPGRADE_TRESHOLD)
                 scheduleReport.setTypeName(MEDICS);
@@ -75,7 +74,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
                 scheduleReport.setTypeName(INFANTRY);
         }
     }
-    private void downgradeUnit(ScheduleReport scheduleReport){
+    private void downgradeUnit(ScheduleReportDto scheduleReport){
         if(scheduleReport.getTypeName().equalsIgnoreCase(MEDICS)&&scheduleReport.getMedSkills()<MEDIC_UPGRADE_TRESHOLD)
             scheduleReport.setTypeName(RECRUITS);
         else if(scheduleReport.getTypeName().equalsIgnoreCase(ASSAULT)&&scheduleReport.getMedSkills()<ASSAULT_UPGRADE_TRESHOLD)

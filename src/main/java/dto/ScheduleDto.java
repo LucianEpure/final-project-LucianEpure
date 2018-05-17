@@ -1,10 +1,10 @@
 package dto;
 
-import entity.Activity;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static application.Constants.WAITING_APPROVAL;
 
 public class ScheduleDto {
 
@@ -12,23 +12,43 @@ public class ScheduleDto {
     private Date date;
     private int regimentId;
     private int regimentCode;
-    private ScheduleReport scheduleReport;
+    private ScheduleReportDto scheduleReport;
     private List<ActivityDto> activities;
+    private String activityNames;
+    private String approved;
 
 
 
 
-    public ScheduleReport getScheduleReport() {
+    public ScheduleReportDto getScheduleReport() {
         return scheduleReport;
     }
 
-    public void setScheduleReport(ScheduleReport scheduleReport) {
+    public void setScheduleReport(ScheduleReportDto scheduleReport) {
         this.scheduleReport = scheduleReport;
     }
 
     public ScheduleDto() {
-        this.scheduleReport = new ScheduleReport();
+        this.scheduleReport = new ScheduleReportDto();
         this.activities = new ArrayList<ActivityDto>();
+        this.approved = WAITING_APPROVAL;
+    }
+
+
+    public String getApproved() {
+        return approved;
+    }
+
+    public void setApproved(String approved) {
+        this.approved = approved;
+    }
+
+    public String getActivityNames() {
+        return activityNames;
+    }
+
+    public void setActivityNames(String activityNames) {
+        this.activityNames = activityNames;
     }
 
     public int getRegimentCode() {

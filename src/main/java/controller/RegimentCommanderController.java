@@ -4,6 +4,7 @@ package controller;
 import dto.ScheduleDto;
 import dto.UserDto;
 import entity.Schedule;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/regimentCommander")
@@ -42,14 +47,28 @@ public class RegimentCommanderController {
 
     @PostMapping(value = "/schedule", params = "schedule")
         public String schedule(Model model, Principal principal, HttpSession session){
-    ScheduleDto scheduleDto = new ScheduleDto();
-    scheduleDto.setDate(new Date());
-    String username = principal.getName();
-    String regimentCode = username.replaceAll("[^0-9]","");
-    scheduleDto.setRegimentCode(Integer.parseInt(regimentCode));
-    scheduleDto = scheduleService.save(scheduleDto);
-    session.setAttribute("scheduleDto",scheduleDto);
-    return "redirect:/regimentCommander/schedule";
+        boolean approved;
+        ScheduleDto scheduleDto = new ScheduleDto();
+        try {
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date today = new Date();
+            Date todayWithZeroTime = formatter.parse(formatter.format(today));
+            scheduleDto.setDate(todayWithZeroTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String username = principal.getName();
+        String regimentCode = username.replaceAll("[^0-9]","");
+        scheduleDto.setRegimentCode(Integer.parseInt(regimentCode));
+        approved = scheduleService.checkIfApproved(scheduleDto);
+        if(approved)
+            return "scheduleError";
+        else{
+            scheduleDto = scheduleService.save(scheduleDto);
+            session.setAttribute("scheduleDto",scheduleDto);
+            return "redirect:/regimentCommander/schedule";
+        }
     }
 
 

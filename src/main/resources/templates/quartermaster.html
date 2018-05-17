@@ -107,6 +107,16 @@
         </form>
     </div>
 </div>
+
+    <div class = "seeSchedules">
+        <div class="form">
+            <h3>Check Schedules</h3>
+            <form action="#"  autocomplete="off"  name="showSchedules" th:action="@{quartermaster/showSchedules}"    method="post">
+                <p> <input type="date"  onfocus="this.value=''" placeholder="date" name="scheduleDate" id="scheduleDate" />
+                 <button name="showSchedules" >Show schedules</button>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

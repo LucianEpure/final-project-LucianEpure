@@ -1,7 +1,6 @@
 package controller;
 
 import dto.*;
-import entity.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -41,7 +40,7 @@ public class ScheduleController {
 
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
         String valid = (String) session.getAttribute("valid");
-        ScheduleReport scheduleReport = scheduleDto.getScheduleReport();
+        ScheduleReportDto scheduleReport = scheduleDto.getScheduleReport();
         List<ActivityDto> activities = scheduleDto.getActivities();
         String username = principal.getName();
         String regimentCode = username.replaceAll("[^0-9]","");
@@ -73,7 +72,7 @@ public class ScheduleController {
     }
 
     @PostMapping(params = "finishSchedule")
-    public String finishSchedule( @ModelAttribute ScheduleReport scheduleRep, HttpSession session,Model model){
+    public String finishSchedule(@ModelAttribute ScheduleReportDto scheduleRep, HttpSession session, Model model){
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
         Notification notification = scheduleService.update(scheduleDto);
         if(notification.hasErrors())
@@ -86,6 +85,7 @@ public class ScheduleController {
 
             return "redirect:/regimentCommander";
         }
+
 
     }
 

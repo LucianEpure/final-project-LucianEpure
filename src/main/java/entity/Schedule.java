@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static application.Constants.WAITING_APPROVAL;
+
 @Entity
 public class Schedule {
 
@@ -22,9 +24,22 @@ public class Schedule {
     @ManyToOne()
     @JoinColumn(name = "regiment_id")
     private Regiment regiment;
+    private String approved;
+
+
 
     public Schedule() {
         this.activities = new ArrayList<Activity>();
+        this.approved = WAITING_APPROVAL;
+    }
+
+
+    public String getApproved() {
+        return approved;
+    }
+
+    public void setApproved(String approved) {
+        this.approved = approved;
     }
 
     public int getId() {

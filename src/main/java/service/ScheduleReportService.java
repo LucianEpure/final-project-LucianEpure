@@ -2,14 +2,14 @@ package service;
 
 import dto.ActivityDto;
 import dto.RegimentDto;
-import dto.ScheduleReport;
+import dto.ScheduleReportDto;
 import dto.SupplyDto;
 
 public interface ScheduleReportService {
 
-    ScheduleReport updateStats(ScheduleReport scheduleReport, ActivityDto activity, String type);
+    ScheduleReportDto updateStats(ScheduleReportDto scheduleReport, ActivityDto activity, String type);
 
-    RegimentDto retrieveRegiment(ScheduleReport scheduleReport);
+    RegimentDto retrieveRegiment(ScheduleReportDto scheduleReport);
 
-    SupplyDto retrieveSupply(ScheduleReport scheduleReport);
+    SupplyDto retrieveSupply(ScheduleReportDto scheduleReport);
 }

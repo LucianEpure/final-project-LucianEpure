@@ -1,6 +1,7 @@
 package controller;
 
 import dto.*;
+import service.notify.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -9,9 +10,11 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import service.RegimentService;
-import service.RequirementService;
-import service.ScheduleService;
+import service.regiment.RegimentService;
+import service.regiment.RequirementService;
+import service.schedule.ScheduleService;
+import service.regiment.UserService;
+import service.notify.NotifyService;
 import validators.Notification;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,12 +30,17 @@ public class ScheduleController {
     private ScheduleService scheduleService;
     private RegimentService regimentService;
     private RequirementService requirementService;
+    private NotifyService notifyService;
+
+    private UserService userService;
 
     @Autowired
-    public ScheduleController(ScheduleService scheduleService, RegimentService regimentService, RequirementService requirementService){
+    public ScheduleController(ScheduleService scheduleService, RegimentService regimentService, RequirementService requirementService,NotifyService notifyService,UserService userService){
         this.regimentService = regimentService;
         this.scheduleService = scheduleService;
         this.requirementService = requirementService;
+        this.userService =userService;
+        this.notifyService = notifyService;
     }
     @GetMapping
     @Order(value = 1)
@@ -55,7 +63,7 @@ public class ScheduleController {
     }
 
     @PostMapping(params = "addActivity")
-    public String addActivity( Model model, @RequestParam("type") String type, HttpSession session){
+    public String addActivity( @RequestParam("type") String type, HttpSession session){
         ActivityDto activityDto = scheduleService.findActivityByName(type);
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
         scheduleService.addActivity(scheduleDto,activityDto);
@@ -72,17 +80,17 @@ public class ScheduleController {
     }
 
     @PostMapping(params = "finishSchedule")
-    public String finishSchedule(@ModelAttribute ScheduleReportDto scheduleRep, HttpSession session, Model model){
+    public String finishSchedule(@ModelAttribute ScheduleReportDto scheduleRep, Principal principal, HttpSession session, Model model){
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
         Notification notification = scheduleService.update(scheduleDto);
-        if(notification.hasErrors())
-        {
+        if(notification.hasErrors()) {
             session.setAttribute("valid", notification.getFormattedErrors());
             return "redirect:/regimentCommander/schedule";
         }
-
         else{
-
+            Message message = new Message();
+            message.setContent(principal.getName()+" added a schedule!.");
+            notifyService.notifyAdmin(message);
             return "redirect:/regimentCommander";
         }
 

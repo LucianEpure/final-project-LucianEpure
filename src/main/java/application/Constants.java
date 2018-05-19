@@ -27,5 +27,8 @@ public class Constants {
     public static final String APPROVED = "Approved";
     public static final String DENIED = "Denied";
 
+    public static final String USERNAME = "RegimentCommander";
+    public static final String MAIL = "@military.com";
+
 
 }

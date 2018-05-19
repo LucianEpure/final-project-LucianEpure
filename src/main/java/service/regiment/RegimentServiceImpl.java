@@ -1,14 +1,11 @@
-package service;
+package service.regiment;
 
 
 import application.Constants;
 import converter.RegimentConverter;
 import dto.RegimentDto;
-import dto.RequirementDto;
 import dto.SupplyDto;
-import dto.UserDto;
 import entity.*;
-import entity.builder.UserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,10 +13,12 @@ import repository.*;
 import validators.IValidator;
 import validators.Notification;
 import validators.RegimentValidator;
-import validators.UserValidator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static application.Constants.MAIL;
+import static application.Constants.USERNAME;
 
 @Service
 public class RegimentServiceImpl implements RegimentService {
@@ -46,17 +45,7 @@ public class RegimentServiceImpl implements RegimentService {
     }
 
 
-    @Override
-    public void registerAdmin(UserDto user) {
-        BCryptPasswordEncoder enc = new BCryptPasswordEncoder();
-        User dbUser = new User();
-        dbUser.setUsername(user.getUsername());
-        dbUser.setPassword(enc.encode(user.getPassword()));
-        List<Role> userRoles = dbUser.getRoles();
-        userRoles.add(roleRepository.findByRoleName(Constants.QUARTERMASTER));
-        dbUser.setRoles(userRoles);
-        userRepository.save(dbUser);
-    }
+
 
     @Override
     public Notification<Boolean> enlistRegiment(int code, String password) {
@@ -73,7 +62,7 @@ public class RegimentServiceImpl implements RegimentService {
             Requirement requirement= new Requirement();
             User user = new User();
             Supply supply = new Supply();
-            user.setUsername("RegimentCommander"+code+"@military.com");
+            user.setUsername(USERNAME+code+MAIL);
             user.setPassword(enc.encode(password));
             List<Role> userRoles = user.getRoles();
             userRoles.add(roleRepository.findByRoleName(Constants.REGIMENTCOMMANDER));

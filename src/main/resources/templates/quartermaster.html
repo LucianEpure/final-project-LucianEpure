@@ -4,19 +4,19 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Quartermaster</title>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="js/quartermaster.js"></script>
     <link th:href="@{/css/quartermaster.css}" rel="Stylesheet">
 </head>
-<body>
+<body onload = "connect()" onunload="disconnect()">
 
 
 
-<div align = "right">
-    <form action = "#" th:action="@{/quartermaster}" method = "post">
-        <p><input type="submit" name="logout" value="Log Out" /> </p>
-    </form>
-</div>
 
-<div class = "showRegs">
+
+<div class = "rightSide">
     <table border="1">
         <thead>
         <tr>
@@ -50,6 +50,12 @@
         </tr>
         </tbody>
     </table>
+
+    <div align = "right">
+        <form action = "#" th:action="@{/quartermaster}" method = "post">
+            <p><input type="submit" name="logout" value="Log Out" /> </p>
+        </form>
+    </div>
 </div>
 <div class="actions">
 <div class="enlist">

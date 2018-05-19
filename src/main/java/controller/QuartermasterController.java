@@ -1,12 +1,8 @@
 package controller;
 
-import converter.RegimentConverter;
 import dto.RegimentDto;
 import dto.RequirementDto;
-import dto.ScheduleDto;
 import dto.SupplyDto;
-import entity.Regiment;
-import entity.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -15,11 +11,11 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import repository.RegimentRepository;
-import service.RegimentService;
-import service.RequirementService;
-import service.ScheduleService;
-import service.SupplyService;
+
+import service.regiment.RegimentService;
+import service.regiment.RequirementService;
+import service.schedule.ScheduleService;
+import service.regiment.SupplyService;
 import validators.Notification;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

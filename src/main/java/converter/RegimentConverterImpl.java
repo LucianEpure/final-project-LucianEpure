@@ -12,17 +12,7 @@ import java.util.List;
 @Component
 public class RegimentConverterImpl implements RegimentConverter {
 
-    @Override
-    public UserDto convertUserToDto(User user){
-        UserDto userDto= new UserDto();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
 
-        List<Role> roles = user.getRoles();
-        for(Role role:roles)
-            userDto.setRoles(userDto.getRoles()+" "+role.getRoleName());
-        return userDto;
-    }
 
     @Override
     public RegimentDto convertRegimentToDto(Regiment regiment) {

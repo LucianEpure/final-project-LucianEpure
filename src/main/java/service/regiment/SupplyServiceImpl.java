@@ -1,6 +1,5 @@
-package service;
+package service.regiment;
 
-import converter.RegimentConverter;
 import converter.SupplyConverter;
 import dto.SupplyDto;
 import entity.Regiment;

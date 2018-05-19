@@ -3,9 +3,13 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script th:src="@{/js/scheduler.js}"></script>
     <title>Title</title>
 </head>
-<body>
+<body onload = "connect()" onunload = "disconnect()">
 
 <div class = "showSchedules">
     <table border="1">

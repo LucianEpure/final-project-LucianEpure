@@ -1,4 +1,4 @@
-package service;
+package service.regiment;
 
 import dto.SupplyDto;
 

@@ -3,37 +3,45 @@ package controller;
 import dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import service.RegimentService;
-import service.ScheduleReportService;
-import service.ScheduleService;
-import service.SupplyService;
+import service.notify.Message;
+import service.notify.NotifyService;
+import service.regiment.RegimentService;
+import service.regiment.SupplyService;
+import service.regiment.UserService;
+import service.schedule.ScheduleReportService;
+import service.schedule.ScheduleService;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-
-import static application.Constants.APPROVED;
-import static application.Constants.DENIED;
 
 @Controller
 @RequestMapping(value = "/quartermaster/showSchedules")
 public class ShowSchedulesController {
 
 
-    ScheduleService scheduleService;
-    ScheduleReportService scheduleReportService;
-    RegimentService regimentService;
-    SupplyService supplyService;
+    private ScheduleService scheduleService;
+    private ScheduleReportService scheduleReportService;
+    private RegimentService regimentService;
+    private SupplyService supplyService;
+    private SimpMessagingTemplate messagingTemplate;
+    private UserService userService;
+    private NotifyService notifyService;
 
     @Autowired
-    public ShowSchedulesController(ScheduleService scheduleService, ScheduleReportService scheduleReportService,SupplyService supplyService, RegimentService regimentService){
+    public ShowSchedulesController(ScheduleService scheduleService, ScheduleReportService scheduleReportService,SupplyService supplyService, RegimentService regimentService, SimpMessagingTemplate messagingTemplate, UserService userService, NotifyService notifyService){
     this.scheduleService = scheduleService;
     this.scheduleReportService = scheduleReportService;
     this.regimentService =regimentService;
     this.supplyService = supplyService;
+    this.messagingTemplate = messagingTemplate;
+    this.userService = userService;
+    this.notifyService= notifyService;
     }
 
     @GetMapping
@@ -46,27 +54,18 @@ public class ShowSchedulesController {
     }
 
     @PostMapping(value = "/{scheduleId}",params = "approve")
-    public String approve(@PathVariable(value = "scheduleId") int scheduleId,Model model) {
-
+    public String approve(@PathVariable(value = "scheduleId") int scheduleId,Model model,Principal principal) {
+        scheduleService.approveSchedule(scheduleId);
 
         ScheduleDto scheduleDto = scheduleService.findById(scheduleId);
-        ScheduleReportDto scheduleReport = new ScheduleReportDto();
-        scheduleReport.init(regimentService.findByCode(scheduleDto.getRegimentCode()),supplyService.findSupplies(regimentService.findByCode(scheduleDto.getRegimentCode()).getSupplyId()));
-        scheduleDto.setApproved(APPROVED);
-        for(ActivityDto activityDto:scheduleDto.getActivities()){
-            scheduleReportService.updateStats(scheduleReport,activityDto,"add");
-            System.out.println("DURATIOOOOOOOOOOOOOOOOOOON"+scheduleReport.getDuration());
-        }
-        regimentService.update(scheduleReportService.retrieveRegiment(scheduleReport),scheduleReportService.retrieveSupply(scheduleReport));
-        scheduleService.update(scheduleDto);
-
+        Message message = new Message();
+        message.setContent(principal.getName()+" approved tbe schedule "+scheduleId);
+        notifyService.notifyRegimentCommander(scheduleDto.getRegimentCode(),message);
         return "redirect:/quartermaster/showSchedules";
     }
     @PostMapping(value = "/{scheduleId}", params = "deny")
     public String deny(@PathVariable(value = "scheduleId") int scheduleId,Model model){
-        ScheduleDto scheduleDto = scheduleService.findById(scheduleId);
-        scheduleDto.setApproved(DENIED);
-        scheduleService.update(scheduleDto);
+       scheduleService.denySchedule(scheduleId);
         return "redirect:/quartermaster/showSchedules";
     }
 }

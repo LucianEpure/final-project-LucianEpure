@@ -1,23 +1,17 @@
 package application;
 
-import dto.RequirementDto;
-import dto.ScheduleDto;
-import dto.SupplyDto;
 import dto.UserDto;
 import entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import repository.ActivityRepository;
 import repository.RoleRepository;
-import repository.TypeRepository;
-import repository.UserRepository;
-import service.RegimentService;
-import service.ScheduleService;
+import service.regiment.RegimentService;
+import service.schedule.ScheduleService;
+import service.regiment.UserService;
 
 import javax.annotation.PostConstruct;
 
-
-import java.util.Date;
 
 import static application.Constants.*;
 
@@ -27,13 +21,13 @@ public class Bootstrap {
     private RoleRepository roleRepository;
 
     private RegimentService regimentService;
-    private RegimentService userService;
+    private UserService userService;
     private ActivityRepository activityRepository;
     private ScheduleService scheduleService;
 
 
     @Autowired
-    public Bootstrap(RoleRepository roleRepository, RegimentService userService,  RegimentService regimentService,  ActivityRepository activityRepository, ScheduleService scheduleService ){
+    public Bootstrap(RoleRepository roleRepository, UserService userService, RegimentService regimentService, ActivityRepository activityRepository, ScheduleService scheduleService ){
         this.roleRepository = roleRepository;
         this.regimentService = regimentService;
         this.activityRepository = activityRepository;

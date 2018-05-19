@@ -1,4 +1,4 @@
-package service;
+package service.regiment;
 
 import dto.RegimentDto;
 import dto.RequirementDto;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface RegimentService {
 
-    void registerAdmin(UserDto userDto);
+
 
     Notification<Boolean> enlistRegiment(int code, String password);
 

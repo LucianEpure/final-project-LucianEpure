@@ -1,4 +1,4 @@
-package service;
+package service.regiment;
 
 import dto.RequirementDto;
 import org.springframework.stereotype.Service;

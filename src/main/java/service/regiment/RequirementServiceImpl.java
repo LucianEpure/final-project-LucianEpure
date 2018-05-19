@@ -1,4 +1,4 @@
-package service;
+package service.regiment;
 
 import converter.RequirementConverter;
 import dto.RequirementDto;

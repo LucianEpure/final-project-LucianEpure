@@ -1,4 +1,4 @@
-package service;
+package service.schedule;
 
 import dto.ActivityDto;
 import dto.ScheduleDto;
@@ -18,6 +18,10 @@ public interface ScheduleService {
 
 
     List<ScheduleDto> findByDate(Date date);
+
+    void approveSchedule(int scheduleId);
+
+    void denySchedule(int scheduleId);
 
     boolean checkIfApproved(ScheduleDto scheduleDto);
 

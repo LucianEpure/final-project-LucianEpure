@@ -17,7 +17,7 @@ public class SupplyServiceImpl implements SupplyService {
     private SupplyConverter supplyConverter;
 
     @Autowired
-     public SupplyServiceImpl(RegimentRepository regimentRepository, SupplyRepository supplyRepository, SupplyConverter supplyConverter){
+    public SupplyServiceImpl(RegimentRepository regimentRepository, SupplyRepository supplyRepository, SupplyConverter supplyConverter) {
         this.regimentRepository = regimentRepository;
         this.supplyRepository = supplyRepository;
         this.supplyConverter = supplyConverter;
@@ -27,9 +27,9 @@ public class SupplyServiceImpl implements SupplyService {
     public void addMoreSupplies(SupplyDto supplyDto, int regimentCode) {
         Regiment regiment = regimentRepository.findByCode(regimentCode);
         Supply supply = regiment.getSupply();
-        supply.setAmmunition(supply.getAmmunition()+supplyDto.getAmmunition());
-        supply.setEquipment(supply.getEquipment()+supplyDto.getEquipment());
-        supply.setFood(supply.getFood()+supplyDto.getFood());
+        supply.setAmmunition(supply.getAmmunition() + supplyDto.getAmmunition());
+        supply.setEquipment(supply.getEquipment() + supplyDto.getEquipment());
+        supply.setFood(supply.getFood() + supplyDto.getFood());
         supplyRepository.save(supply);
     }
 

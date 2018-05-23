@@ -17,7 +17,7 @@ public interface RegimentService {
 
     Notification<Boolean> enlistRegiment(int code, String password);
 
-    void removeRegiment(int code);
+    Notification<Boolean> sendRegimentToWar(int regimentCode, int locationCode);
 
     RegimentDto findByCode(int code);
 

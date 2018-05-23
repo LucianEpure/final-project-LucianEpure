@@ -11,11 +11,7 @@ import java.util.List;
 
 public interface ScheduleService {
 
-
-    ScheduleDto save (ScheduleDto scheduleDto);
-
     ActivityDto findActivityByName(String activityName);
-
 
     List<ScheduleDto> findByDate(Date date);
 
@@ -27,12 +23,8 @@ public interface ScheduleService {
 
    ScheduleDto addActivity(ScheduleDto scheduleDto, ActivityDto activityDto);
 
-    ScheduleDto removeActivity(ScheduleDto scheduleDto);
+   ScheduleDto removeActivity(ScheduleDto scheduleDto);
 
-   Notification<Boolean> update(ScheduleDto scheduleDto);
 
-   List<ScheduleDto> showAll();
-
-   ScheduleDto findById(int id);
 
 }

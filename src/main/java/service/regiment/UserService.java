@@ -4,7 +4,7 @@ import dto.UserDto;
 
 public interface UserService {
 
-    void registerAdmin(UserDto userDto);
+    void registerUser(UserDto userDto,String type);
 
     UserDto findAdmin();
 

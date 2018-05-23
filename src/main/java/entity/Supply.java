@@ -6,6 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import static application.Constants.INITIAL_AMMUNITION;
+import static application.Constants.INITIAL_EQUIPMENT;
+import static application.Constants.INITIAL_FOOD;
+
 @Entity
 public class Supply {
 
@@ -17,9 +21,9 @@ public class Supply {
     private int equipment;
 
     public Supply(){
-        this.ammunition = 500;
-        this.food = 500;
-        this.equipment = 100;
+        this.ammunition = INITIAL_AMMUNITION;
+        this.food = INITIAL_FOOD;
+        this.equipment = INITIAL_EQUIPMENT;
     }
 
     public int getAmmunition() {

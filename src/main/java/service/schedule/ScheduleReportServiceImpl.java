@@ -1,5 +1,6 @@
 package service.schedule;
 
+import ch.qos.logback.core.db.dialect.SybaseSqlAnywhereDialect;
 import dto.ActivityDto;
 import dto.RegimentDto;
 import dto.ScheduleReportDto;
@@ -22,7 +23,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
             scheduleReport.setFood(scheduleReport.getFood()-activity.getFoodCost());
             scheduleReport.setEquipment(scheduleReport.getEquipment()-activity.getEquipmentCost());
             scheduleReport.setDuration(scheduleReport.getDuration()+activity.getDuration());
-            upgradeUnit(scheduleReport);
+            scheduleReport.setTypeName(upgradeUnit(scheduleReport));
         }
         else if(type.equalsIgnoreCase("remove")){
             scheduleReport.setMedSkills(scheduleReport.getMedSkills()-activity.getMedSkillChange());
@@ -34,7 +35,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
             scheduleReport.setFood(scheduleReport.getFood()+activity.getFoodCost());
             scheduleReport.setEquipment(scheduleReport.getEquipment()+activity.getEquipmentCost());
             scheduleReport.setDuration(scheduleReport.getDuration()-activity.getDuration());
-            downgradeUnit(scheduleReport);
+            scheduleReport.setTypeName(downgradeUnit(scheduleReport));
         }
 
         return scheduleReport;
@@ -62,27 +63,30 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
         return  supplyDto;
     }
 
-    private void upgradeUnit(ScheduleReportDto scheduleReport){
-        if(scheduleReport.getTypeName().equalsIgnoreCase(RECRUITS)){
-            if(scheduleReport.getMedSkills()>= MEDIC_UPGRADE_TRESHOLD)
+    private String upgradeUnit(ScheduleReportDto scheduleReport){
+        if(scheduleReport.getTypeName().equalsIgnoreCase(RECRUITS)) {
+            if (scheduleReport.getMedSkills() >= MEDIC_UPGRADE_TRESHOLD) {
                 scheduleReport.setTypeName(MEDICS);
-            else if (scheduleReport.getMedSkills()>= ASSAULT_UPGRADE_TRESHOLD)
+            } else if (scheduleReport.getShooting() >= ASSAULT_UPGRADE_TRESHOLD) {
                 scheduleReport.setTypeName(ASSAULT);
-            else if (scheduleReport.getMedSkills()>= ENGINEER_UPGRADE_THRESHOLD)
+            } else if (scheduleReport.getIntelligence() >= ENGINEER_UPGRADE_THRESHOLD) {
                 scheduleReport.setTypeName(ENGINEERS);
-            else if (scheduleReport.getMedSkills()>= INFANTRY_UPGRADE_THRESHOLD)
+            } else if (scheduleReport.getStrength() >= INFANTRY_UPGRADE_THRESHOLD) {
                 scheduleReport.setTypeName(INFANTRY);
+            }
         }
+        return scheduleReport.getTypeName();
     }
-    private void downgradeUnit(ScheduleReportDto scheduleReport){
+    private String downgradeUnit(ScheduleReportDto scheduleReport){
         if(scheduleReport.getTypeName().equalsIgnoreCase(MEDICS)&&scheduleReport.getMedSkills()<MEDIC_UPGRADE_TRESHOLD)
             scheduleReport.setTypeName(RECRUITS);
-        else if(scheduleReport.getTypeName().equalsIgnoreCase(ASSAULT)&&scheduleReport.getMedSkills()<ASSAULT_UPGRADE_TRESHOLD)
+        else if(scheduleReport.getTypeName().equalsIgnoreCase(ASSAULT)&&scheduleReport.getShooting()<ASSAULT_UPGRADE_TRESHOLD)
             scheduleReport.setTypeName(RECRUITS);
-        else if(scheduleReport.getTypeName().equalsIgnoreCase(ENGINEERS)&&scheduleReport.getMedSkills()<ENGINEER_UPGRADE_THRESHOLD)
+        else if(scheduleReport.getTypeName().equalsIgnoreCase(ENGINEERS)&&scheduleReport.getIntelligence()<ENGINEER_UPGRADE_THRESHOLD)
             scheduleReport.setTypeName(RECRUITS);
-        if(scheduleReport.getTypeName().equalsIgnoreCase(INFANTRY)&&scheduleReport.getMedSkills()<INFANTRY_UPGRADE_THRESHOLD)
+        if(scheduleReport.getTypeName().equalsIgnoreCase(INFANTRY)&&scheduleReport.getStrength()<INFANTRY_UPGRADE_THRESHOLD)
             scheduleReport.setTypeName(RECRUITS);
-
+        return scheduleReport.getTypeName();
     }
+
 }

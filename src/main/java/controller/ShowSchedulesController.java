@@ -12,6 +12,7 @@ import service.notify.NotifyService;
 import service.regiment.RegimentService;
 import service.regiment.SupplyService;
 import service.regiment.UserService;
+import service.schedule.ScheduleCRUDService;
 import service.schedule.ScheduleReportService;
 import service.schedule.ScheduleService;
 
@@ -26,22 +27,14 @@ public class ShowSchedulesController {
 
 
     private ScheduleService scheduleService;
-    private ScheduleReportService scheduleReportService;
-    private RegimentService regimentService;
-    private SupplyService supplyService;
-    private SimpMessagingTemplate messagingTemplate;
-    private UserService userService;
     private NotifyService notifyService;
+    private ScheduleCRUDService scheduleCRUDService;
 
     @Autowired
-    public ShowSchedulesController(ScheduleService scheduleService, ScheduleReportService scheduleReportService,SupplyService supplyService, RegimentService regimentService, SimpMessagingTemplate messagingTemplate, UserService userService, NotifyService notifyService){
+    public ShowSchedulesController(ScheduleCRUDService scheduleCRUDService,ScheduleService scheduleService, ScheduleReportService scheduleReportService,SupplyService supplyService, RegimentService regimentService, SimpMessagingTemplate messagingTemplate, UserService userService, NotifyService notifyService){
     this.scheduleService = scheduleService;
-    this.scheduleReportService = scheduleReportService;
-    this.regimentService =regimentService;
-    this.supplyService = supplyService;
-    this.messagingTemplate = messagingTemplate;
-    this.userService = userService;
     this.notifyService= notifyService;
+    this.scheduleCRUDService = scheduleCRUDService;
     }
 
     @GetMapping
@@ -57,10 +50,10 @@ public class ShowSchedulesController {
     public String approve(@PathVariable(value = "scheduleId") int scheduleId,Model model,Principal principal) {
         scheduleService.approveSchedule(scheduleId);
 
-        ScheduleDto scheduleDto = scheduleService.findById(scheduleId);
+        ScheduleDto scheduleDto = scheduleCRUDService.findById(scheduleId);
         Message message = new Message();
         message.setContent(principal.getName()+" approved tbe schedule "+scheduleId);
-        notifyService.notifyRegimentCommander(scheduleDto.getRegimentCode(),message);
+        notifyService.notifyRegimentCommander(scheduleCRUDService.findById(scheduleId).getRegimentCode(),message);
         return "redirect:/quartermaster/showSchedules";
     }
     @PostMapping(value = "/{scheduleId}", params = "deny")

@@ -13,6 +13,27 @@
 </head>
 <body onload = "connect()" onunload = "disconnect()">
 
+
+<h1>Regiment:<span th:text = "${regimentDto.code}"></span></h1>
+<div class="stats">
+    <h3>Regiment stats</h3>
+    <p>Type: <span  th:text = "${regimentDto.typeName}"></span></p>
+    <p>Strength:<span name = "strength" th:text = "${regimentDto.strength}"></span></p>
+    <p>Stamina:<span th:text = "${regimentDto.stamina}"></span></p>
+    <p>Shooting:<span th:text = "${regimentDto.shooting}"></span></p>
+    <p>Intelligence:<span th:text = "${regimentDto.intelligence}"></span></p>
+    <p>Medical skills:<span th:text = "${regimentDto.medSkills}"></span></p>
+</div>
+
+<br>
+<div class="supplies">
+    <h3>Regiment supplies</h3>
+    <p>Food: <span th:text = "${supplyDto.food}"></span></p>
+    <p>Ammunition:<span th:text = "${supplyDto.ammunition}"></span></p>
+    <p>Equipment:<span th:text = "${supplyDto.equipment}"></span></p>
+
+</div>
+
 <div align = "right">
     <form action = "#" th:action="@{/regimentCommander}" method = "post">
         <p><input type="submit" name="logout" value="Log Out" /> </p>

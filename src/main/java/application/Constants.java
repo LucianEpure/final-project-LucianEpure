@@ -4,6 +4,17 @@ public class Constants {
 
     public static final String QUARTERMASTER = "Quartermaster";
     public static final String REGIMENTCOMMANDER = "Regiment Commander";
+    public static final String CHIEFCOMMANDER = "Chief Commander";
+
+    public static final int INITIAL_STAMINA = 70;
+    public static final int INITIAL_STRENGTH = 10;
+    public static final int INITIAL_SHOOTING = 0;
+    public static final int INITIAL_INTELLIGENCE = 10;
+    public static final int INITIAL_MED = 0;
+
+    public static final int INITIAL_AMMUNITION = 500;
+    public static final int INITIAL_FOOD = 500;
+    public static final int INITIAL_EQUIPMENT = 100;
 
     public static final String INFANTRY = "Infantry";
     public static final String MEDICS = "Medics";

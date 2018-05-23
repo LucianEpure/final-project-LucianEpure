@@ -3,6 +3,8 @@ package entity;
 import javax.persistence.*;
 import java.util.List;
 
+import static application.Constants.*;
+
 @Entity
 public class Regiment {
 
@@ -40,11 +42,11 @@ public class Regiment {
     private Requirement requirement;
 
     public Regiment(){
-        this.intelligence = 10;
-        this.stamina = 70;
-        this.strength = 10;
-        this.shooting = 0;
-        this.medSkills = 0;
+        this.intelligence = INITIAL_INTELLIGENCE;
+        this.stamina = INITIAL_STAMINA;
+        this.strength = INITIAL_STRENGTH;
+        this.shooting = INITIAL_SHOOTING;
+        this.medSkills = INITIAL_MED;
     }
 
 

@@ -13,4 +13,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
         List<Schedule> findByRegimentAndDate(Regiment regiment, Date date);
 
         List<Schedule> findByDate(Date date);
+
+        void deleteByRegiment(Regiment regiment);
 }

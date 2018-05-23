@@ -19,6 +19,8 @@ public class SuccessHandler  extends SavedRequestAwareAuthenticationSuccessHandl
             targetUrl = "/quartermaster";
         } else if(role.contains("Regiment Commander")) {
             targetUrl = "/regimentCommander";
+        }else if(role.contains("Chief Commander")){
+            targetUrl = "/chiefCommander";
         }
         return targetUrl;
     }

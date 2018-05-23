@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.*;
+import service.request.RequestService;
 import validators.IValidator;
 import validators.Notification;
 import validators.RegimentValidator;
+import validators.WarValidator;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +33,13 @@ public class RegimentServiceImpl implements RegimentService {
     private RequirementRepository requirementRepository;
     private SupplyRepository supplyRepository;
     private RegimentConverter regimentConverter;
+    private RequestRepository requestRepository;
+    private ScheduleRepository scheduleRepository;
     private IValidator validator;
 
 
     @Autowired
-    public RegimentServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RegimentRepository regimentRepository, TypeRepository typeRepository, SupplyRepository supplyRepository, RequirementRepository requirementRepository, RegimentConverter regimentConverter){
+    public RegimentServiceImpl( RequestRepository requestRepository,UserRepository userRepository, RoleRepository roleRepository, RegimentRepository regimentRepository, TypeRepository typeRepository, SupplyRepository supplyRepository, RequirementRepository requirementRepository, RegimentConverter regimentConverter,ScheduleRepository scheduleRepository){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.regimentRepository = regimentRepository;
@@ -42,6 +47,8 @@ public class RegimentServiceImpl implements RegimentService {
         this.supplyRepository = supplyRepository;
         this.requirementRepository = requirementRepository;
         this.regimentConverter = regimentConverter;
+        this.requestRepository = requestRepository;
+        this.scheduleRepository = scheduleRepository;
     }
 
 
@@ -81,14 +88,44 @@ public class RegimentServiceImpl implements RegimentService {
     }
 
     @Override
-    public void removeRegiment(int code) {
-        Regiment regiment = regimentRepository.findByCode(code);
-        regimentRepository.deleteById(regiment.getId());
+    @Transactional
+    public Notification<Boolean> sendRegimentToWar(int regimentCode, int locationCode) {
+       boolean found = false;
+        Regiment regiment = regimentRepository.findByCode(regimentCode);
+        Request request = requestRepository.getOne(locationCode);
+        List<Type> types = request.getTypes();
+
+            for(Type type:types){
+                if(regiment.getType().getTypeName().equals(type.getTypeName())){
+                    scheduleRepository.deleteByRegiment(regiment);
+                    regimentRepository.deleteById(regiment.getId());
+                    types.remove(type);
+                    request.setTypes(types);
+                    requestRepository.save(request);
+                    if(types.size()==0)
+                        requestRepository.deleteById(request.getId());
+
+                    found = true;
+                }
+
+            }
+            System.out.println("FOUUUUUUND"+found);
+        validator = new WarValidator(found);
+        boolean warValid = validator.validate();
+        Notification<Boolean> sendToWarNotification = new Notification<>();
+        if(!warValid){
+            validator.getErrors().forEach(sendToWarNotification::addError);
+            sendToWarNotification.setResult(Boolean.FALSE);
+        }
+        else
+            sendToWarNotification.setResult(Boolean.TRUE);
+        System.out.println("ERRRORRRRSS"+sendToWarNotification.getFormattedErrors());
+        return sendToWarNotification;
     }
 
     @Override
-    public RegimentDto findByCode(int code) {
-        return regimentConverter.convertRegimentToDto(regimentRepository.findByCode(code));
+    public RegimentDto findByCode(int regimentCode) {
+        return regimentConverter.convertRegimentToDto(regimentRepository.findByCode(regimentCode));
     }
 
     @Override

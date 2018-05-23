@@ -1,17 +1,28 @@
 package application;
 
+import converter.TypeConverter;
+import dto.RegimentDto;
+import dto.RequestDto;
+import dto.TypeDto;
 import dto.UserDto;
 import entity.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import repository.ActivityRepository;
 import repository.RoleRepository;
+import repository.TypeRepository;
 import service.regiment.RegimentService;
+import service.regiment.SupplyService;
+import service.request.RequestService;
 import service.schedule.ScheduleService;
 import service.regiment.UserService;
 
 import javax.annotation.PostConstruct;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static application.Constants.*;
 
@@ -21,18 +32,22 @@ public class Bootstrap {
     private RoleRepository roleRepository;
 
     private RegimentService regimentService;
+    private TypeConverter typeConverter;
+    private SupplyService supplyService;
     private UserService userService;
     private ActivityRepository activityRepository;
-    private ScheduleService scheduleService;
-
-
+    private TypeRepository typeRepository;
+    private RequestService requestService;
     @Autowired
-    public Bootstrap(RoleRepository roleRepository, UserService userService, RegimentService regimentService, ActivityRepository activityRepository, ScheduleService scheduleService ){
+    public Bootstrap(TypeConverter typeConverter, RequestService requestService, RoleRepository roleRepository,TypeRepository typeRepository, UserService userService, RegimentService regimentService, ActivityRepository activityRepository,SupplyService supplyService ){
         this.roleRepository = roleRepository;
         this.regimentService = regimentService;
         this.activityRepository = activityRepository;
         this.userService = userService;
-        this.scheduleService = scheduleService;
+        this.supplyService = supplyService;
+        this.typeRepository = typeRepository;
+        this.requestService = requestService;
+        this.typeConverter = typeConverter;
 
     }
 
@@ -42,13 +57,16 @@ public class Bootstrap {
         initTypes();
         initActivities();
         initUsers();
+        initRequests();
 
     }
 
     private void initRoles() {
         Role quartermaster = new Role(Constants.QUARTERMASTER);
         Role regimentCommander = new Role(Constants.REGIMENTCOMMANDER);
+        Role chiefCommander = new Role(Constants.CHIEFCOMMANDER);
         roleRepository.save(quartermaster);
+        roleRepository.save(chiefCommander);
         roleRepository.save(regimentCommander);
     }
 
@@ -85,12 +103,37 @@ public class Bootstrap {
         UserDto user1 = new UserDto();
         user1.setUsername("QM1@yahoo.com");
         user1.setPassword("aB123456!");
-        userService.registerAdmin(user1);
+        userService.registerUser(user1,QUARTERMASTER);
+        UserDto user2 = new UserDto();
+        user2.setUsername("ChiefCommander1@yahoo.com");
+        user2.setPassword("aB123456!");
+        userService.registerUser(user2,CHIEFCOMMANDER);
         regimentService.enlistRegiment(123456,"aB123456!");
+        regimentService.enlistRegiment(333333,"aB123456!");
+        regimentService.enlistRegiment(444444,"aB123456!");
+        RegimentDto regimentDto = regimentService.findByCode(333333);
+        regimentDto.setShooting(290);
+        regimentService.update(regimentDto,supplyService.findSupplies(regimentDto.getSupplyId()));
+        RegimentDto regimentDto1 = regimentService.findByCode(444444);
+        regimentDto1.setStrength(390);
+        regimentService.update(regimentDto1,supplyService.findSupplies(regimentDto1.getSupplyId()));
         //ScheduleDto scheduleDto = new ScheduleDto();
 
        // scheduleDto.setDate(new Date());
        // scheduleService.save(scheduleDto, 123456);
+
+    }
+
+    private void initRequests(){
+        RequestDto requestDto = new RequestDto();
+        List<TypeDto> types = new ArrayList<TypeDto>();
+        types.add(typeConverter.convertToDto(typeRepository.findByTypeName(INFANTRY)));
+        types.add(typeConverter.convertToDto(typeRepository.findByTypeName(INFANTRY)));
+        types.add(typeConverter.convertToDto(typeRepository.findByTypeName(MEDICS)));
+        requestDto.setTypes(types);
+        requestDto.setLocationName("Guantanamo");
+        requestService.addRequest(requestDto);
+        List<RequestDto> requestDtos  = requestService.showAll();
 
     }
 

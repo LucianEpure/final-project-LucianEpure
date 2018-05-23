@@ -1,6 +1,7 @@
 package controller;
 
 import dto.RegimentDto;
+import dto.RequestDto;
 import dto.RequirementDto;
 import dto.SupplyDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import service.regiment.RegimentService;
 import service.regiment.RequirementService;
+import service.request.RequestService;
 import service.schedule.ScheduleService;
 import service.regiment.SupplyService;
 import validators.Notification;
@@ -33,23 +35,27 @@ public class QuartermasterController {
     private RegimentService regimentService;
     private SupplyService supplyService;
     private RequirementService requirementService;
-    private ScheduleService scheduleService;
+    private RequestService requestService;
 
     @Autowired
-    public QuartermasterController(RegimentService regimentService, SupplyService supplyService, RequirementService requirementService, ScheduleService scheduleService){
+    public QuartermasterController(RegimentService regimentService,RequestService requestService, SupplyService supplyService, RequirementService requirementService){
         this.regimentService = regimentService;
         this.supplyService = supplyService;
         this.requirementService = requirementService;
-        this.scheduleService = scheduleService;
+        this.requestService = requestService;
     }
 
     @GetMapping
     @Order(value = 1)
-    public String displayMenu(Model model){
+    public String displayMenu(Model model,HttpSession session){
+        String valid = (String) session.getAttribute("valid");
         model.addAttribute("requirementDto",new RequirementDto());
         model.addAttribute("supplyDto", new SupplyDto());
         List<RegimentDto> regiments = regimentService.showAll();
+        List<RequestDto> requests = requestService.showAll();
+        model.addAttribute("valid",valid);
         model.addAttribute("regiments",regiments);
+        model.addAttribute("requests",requests);
         return "quartermaster";
     }
 
@@ -76,8 +82,10 @@ public class QuartermasterController {
     }
 
     @PostMapping(params = "sendToWar")
-    public String sendToWar(Model model, @RequestParam("sendToWarCode") String sendToWarCode){
-        regimentService.removeRegiment(Integer.parseInt(sendToWarCode));
+    public String sendToWar(Model model, @RequestParam("sendToWarCode") String sendToWarCode,@RequestParam("sendToWarLocation") String sendToWarLocation,HttpSession session){
+          Notification<Boolean> sendToWar = regimentService.sendRegimentToWar(Integer.parseInt(sendToWarCode),Integer.parseInt(sendToWarLocation));
+          if(sendToWar.hasErrors())
+          session.setAttribute("valid",sendToWar.getFormattedErrors());
           return "redirect:/quartermaster";
     }
 

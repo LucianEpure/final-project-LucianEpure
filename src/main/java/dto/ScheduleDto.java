@@ -1,12 +1,14 @@
 package dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import service.notify.Message;
 
+import java.util.*;
+
+import static application.Constants.QUARTERMASTER;
+import static application.Constants.REGIMENTCOMMANDER;
 import static application.Constants.WAITING_APPROVAL;
 
-public class ScheduleDto {
+public class ScheduleDto{
 
     private int id;
     private Date date;
@@ -16,6 +18,8 @@ public class ScheduleDto {
     private List<ActivityDto> activities;
     private String activityNames;
     private String approved;
+
+    //private List<UserDto> observers;
 
 
 
@@ -33,7 +37,21 @@ public class ScheduleDto {
         this.activities = new ArrayList<ActivityDto>();
         this.approved = WAITING_APPROVAL;
     }
-
+    /*public void addObserver(UserDto observer){
+        observers.add(observer);
+    }
+    public void notifyAdmin(Message message){
+        for(UserDto observer:observers){
+            if(observer.getRoles().equalsIgnoreCase(QUARTERMASTER))
+                observer.update(message);
+        }
+    }
+    public void notifyRegCommanders(Message message){
+        for(UserDto observer:observers){
+            if(observer.getRoles().equalsIgnoreCase(REGIMENTCOMMANDER))
+                observer.update(message);
+        }
+    }*/
 
     public String getApproved() {
         return approved;

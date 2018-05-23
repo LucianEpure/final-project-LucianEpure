@@ -8,11 +8,17 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="js/quartermaster.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiOH05jh_yXzWcDVUuurMr2OY9zGU8ubc&libraries=places&callback=initAutocomplete">
+    </script>
+
     <link th:href="@{/css/quartermaster.css}" rel="Stylesheet">
 </head>
 <body onload = "connect()" onunload="disconnect()">
 
-
+<div align = "left">
+    <p th:text="${valid}" /></p>
+</div>
 
 
 
@@ -56,6 +62,27 @@
             <p><input type="submit" name="logout" value="Log Out" /> </p>
         </form>
     </div>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div id = "map">
+
+    </div>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Location</th>
+            <th>Info</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${requests}">
+            <td th:text ="${request.id}"></td>
+            <td id="location" th:text="${request.locationName}" th:onclick="'setSearch(\''+${request.locationName}+ '\');'"></td>
+            <td th:text="${request.totalTypesString}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div class="actions">
 <div class="enlist">
@@ -75,7 +102,8 @@
     <div class="form">
         <h3>Send Regiments</h3>
         <form action="#" name="sendToWar" th:action="@{/quartermaster}"  method="post">
-            <input type="text" onfocus="this.value=''" placeholder="regiment code" name="sendToWarCode" id="sendToWarCode"/></p>
+            <p><input type="text" onfocus="this.value=''" placeholder="regiment code" name="sendToWarCode" id="sendToWarCode"/>
+                <input type="text" onfocus="this.value=''" placeholder="location" name="sendToWarLocation" id="sendToWarLocation"/></p>
             <button name="sendToWar" onclick="return confirm ('Are you sure?')">Send To War</button>
 
         </form>

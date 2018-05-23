@@ -6,6 +6,7 @@ import converter.ScheduleConverter;
 import converter.SupplyConverter;
 import dto.*;
 import entity.Activity;
+import entity.Regiment;
 import entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,17 +32,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     private RegimentRepository regimentRepository;
     private RegimentService regimentService;
     private SupplyService supplyService;
+    private ScheduleCRUDService scheduleCRUDService;
     private ScheduleRepository scheduleRepository;
     private ActivityRepository activityRepository;
     private ScheduleConverter scheduleConverter;
     private ScheduleReportService scheduleReportService;
     private ActivityConverter activityConverter;
-    private RegimentConverter regimentConverter;
-    private SupplyConverter supplyConverter;
+
 
 
     @Autowired
-    public ScheduleServiceImpl(RegimentRepository regimentRepository, ScheduleRepository scheduleRepository, ScheduleConverter scheduleConverter, ActivityRepository activityRepository, ScheduleReportService scheduleReportService,RegimentConverter regimentConverter, SupplyConverter supplyConverter, RegimentService regimentService, ActivityConverter activityConverter,SupplyService supplyService){
+    public ScheduleServiceImpl(RegimentRepository regimentRepository, ScheduleRepository scheduleRepository, ScheduleConverter scheduleConverter, ActivityRepository activityRepository, ScheduleReportService scheduleReportService,RegimentService regimentService, ActivityConverter activityConverter,SupplyService supplyService, ScheduleCRUDService scheduleCRUDService){
         this.regimentRepository = regimentRepository;
         this.scheduleRepository = scheduleRepository;
         this.scheduleConverter = scheduleConverter;
@@ -49,27 +50,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.scheduleReportService = scheduleReportService;
         this.activityConverter = activityConverter;
         this.regimentService = regimentService;
-        this.regimentConverter = regimentConverter;
-        this.supplyConverter = supplyConverter;
         this.supplyService  = supplyService;
+        this.scheduleCRUDService = scheduleCRUDService;
     }
 
-    @Override
-    public ScheduleDto save(ScheduleDto scheduleDto) {
-        Schedule schedule = new Schedule();
-        schedule.setDate(scheduleDto.getDate());
-        List<Schedule> schedules = scheduleRepository.findByRegimentAndDate(regimentRepository.findByCode(scheduleDto.getRegimentCode()),scheduleDto.getDate());
-        for(Schedule schedule1:schedules){
-                schedule.setId(schedule1.getId());      //if there is already a schedule for that date that has not been approved, the commander may update it
-        }
-        schedule.setRegiment(regimentRepository.findByCode(scheduleDto.getRegimentCode()));
-        schedule = scheduleRepository.save(schedule);
-        ScheduleDto scheduleDto1 = scheduleConverter.convertScheduleToDto(schedule);
-        ScheduleReportDto scheduleReport = new ScheduleReportDto();
-        scheduleReport.init(regimentConverter.convertRegimentToDto(schedule.getRegiment()),supplyConverter.convertSupplyToDto(schedule.getRegiment().getSupply()));
-        scheduleDto1.setScheduleReport(scheduleReport);
-        return  scheduleDto1;
-    }
+
 
 @Override
 public boolean checkIfApproved(ScheduleDto scheduleDto){
@@ -77,6 +62,8 @@ public boolean checkIfApproved(ScheduleDto scheduleDto){
     for(Schedule schedule1:schedules){
         if(schedule1.getApproved().equalsIgnoreCase(APPROVED))
             return true;
+        else
+            return false;
     }
     return false;
 }
@@ -87,6 +74,7 @@ public boolean checkIfApproved(ScheduleDto scheduleDto){
         activities.add(activity);
         scheduleDto.setActivities(activities);
         scheduleDto.setScheduleReport(scheduleReportService.updateStats(scheduleDto.getScheduleReport(),activity,"add"));
+
         return scheduleDto;
     }
     @Override
@@ -99,48 +87,8 @@ public boolean checkIfApproved(ScheduleDto scheduleDto){
         return scheduleDto;
     }
 
-    @Override
-    public Notification<Boolean> update(ScheduleDto scheduleDto) {
 
-        IValidator validator = new ScheduleValidator(scheduleDto);
-        boolean scheduleValid = validator.validate();
-        Notification<Boolean> scheduleNotification = new Notification<Boolean>();
-        if(!scheduleValid){
-            validator.getErrors().forEach(scheduleNotification::addError );
-            scheduleNotification.setResult(Boolean.FALSE);
-        }
-        else{
-            Schedule schedule = new Schedule();
-            schedule.setId(scheduleDto.getId());
-            schedule.setRegiment(regimentRepository.getOne(scheduleDto.getRegimentId()));
-            schedule.setDate(scheduleDto.getDate());
-            schedule.setApproved(scheduleDto.getApproved());
-            List<Activity> activities = new ArrayList<Activity>();
-            for(ActivityDto activityDto:scheduleDto.getActivities()){
-                activities.add(activityConverter.convertActivityFromDto(activityDto));
-            }
-            schedule.setActivities(activities);
-            scheduleRepository.save(schedule);
-            scheduleNotification.setResult(Boolean.TRUE);
-        }
 
-        return scheduleNotification;
-    }
-
-    @Override
-    public List<ScheduleDto> showAll() {
-        List<Schedule> schedules = scheduleRepository.findAll();
-        List<ScheduleDto> scheduleDtos = new ArrayList<ScheduleDto>();
-        for(Schedule schedule:schedules){
-            scheduleDtos.add(scheduleConverter.convertScheduleToDto(schedule));
-        }
-        return scheduleDtos;
-    }
-
-    @Override
-    public ScheduleDto findById(int id) {
-        return scheduleConverter.convertScheduleToDto(scheduleRepository.getOne(id));
-    }
 
     @Override
     public ActivityDto findActivityByName(String activityName){
@@ -159,21 +107,23 @@ public boolean checkIfApproved(ScheduleDto scheduleDto){
 
     @Override
     public void approveSchedule(int scheduleId) {
-        ScheduleDto scheduleDto = this.findById(scheduleId);
+        ScheduleDto scheduleDto = scheduleCRUDService.findById(scheduleId);
         ScheduleReportDto scheduleReport = new ScheduleReportDto();
-        scheduleReport.init(regimentService.findByCode(scheduleDto.getRegimentCode()),supplyService.findSupplies(regimentService.findByCode(scheduleDto.getRegimentCode()).getSupplyId()));
+        RegimentDto regiment = regimentService.findByCode(scheduleDto.getRegimentCode());
+        SupplyDto supply = supplyService.findSupplies(regiment.getSupplyId());
+        scheduleReport.init(regimentService.findByCode(scheduleDto.getRegimentCode()),supply);
         scheduleDto.setApproved(APPROVED);
         for(ActivityDto activityDto:scheduleDto.getActivities()){
             scheduleReportService.updateStats(scheduleReport,activityDto,"add");
         }
         regimentService.update(scheduleReportService.retrieveRegiment(scheduleReport),scheduleReportService.retrieveSupply(scheduleReport));
-        this.update(scheduleDto);
+        scheduleCRUDService.update(scheduleDto);
     }
 
     @Override
     public void denySchedule(int scheduleId) {
-        ScheduleDto scheduleDto = this.findById(scheduleId);
+        ScheduleDto scheduleDto = scheduleCRUDService.findById(scheduleId);
         scheduleDto.setApproved(DENIED);
-        this.update(scheduleDto);
+        scheduleCRUDService.update(scheduleDto);
     }
 }

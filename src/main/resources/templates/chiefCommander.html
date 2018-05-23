@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chief Commander</title>
+</head>
+<body>
+
+<form action="#" name="addUnit" th:action="@{/chiefCommander}"  method="post">
+    <p>Location:<input type="text" name="location" /> </p>
+    <select name ="type"  >
+        <option value="infantry">Infantry</option>
+        <option value="assault">Assault</option>
+        <option value="medics">Medics</option>
+        <option value="engineers">Engineers</option>
+        <option th:each="option : ${options}" th:text="${option}" ></option>
+    </select>
+    <p><input type="submit" name="addUnit" value="addUnit" /> </p>
+</form>
+
+<form action="#" name="finishRequest" th:action="@{/chiefCommander}"  method="post">
+    <p><input type="submit" name="finishRequest" value="Finish Request" onclick="return confirm ('Are you sure?')"/> </p>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="type : ${types}">
+        <td th:text ="${type.typeName}"></td>
+    </tr>
+    </tbody>
+</table>
+
+
+<form action = "#" th:action="@{/chiefCommander}" method = "post">
+    <p><input type="submit" name="logout" value="Log Out" /> </p>
+</form>
+</body>
+</html>

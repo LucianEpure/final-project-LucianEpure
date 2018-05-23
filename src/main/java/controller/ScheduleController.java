@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.regiment.RegimentService;
 import service.regiment.RequirementService;
+import service.schedule.ScheduleCRUDService;
 import service.schedule.ScheduleService;
 import service.regiment.UserService;
 import service.notify.NotifyService;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ScheduleController {
 
     private ScheduleService scheduleService;
+    private ScheduleCRUDService scheduleCRUDService;
     private RegimentService regimentService;
     private RequirementService requirementService;
     private NotifyService notifyService;
@@ -35,12 +37,13 @@ public class ScheduleController {
     private UserService userService;
 
     @Autowired
-    public ScheduleController(ScheduleService scheduleService, RegimentService regimentService, RequirementService requirementService,NotifyService notifyService,UserService userService){
+    public ScheduleController(ScheduleCRUDService scheduleCRUDService, ScheduleService scheduleService, RegimentService regimentService, RequirementService requirementService,NotifyService notifyService,UserService userService){
         this.regimentService = regimentService;
         this.scheduleService = scheduleService;
         this.requirementService = requirementService;
         this.userService =userService;
         this.notifyService = notifyService;
+        this.scheduleCRUDService = scheduleCRUDService;
     }
     @GetMapping
     @Order(value = 1)
@@ -82,7 +85,7 @@ public class ScheduleController {
     @PostMapping(params = "finishSchedule")
     public String finishSchedule(@ModelAttribute ScheduleReportDto scheduleRep, Principal principal, HttpSession session, Model model){
         ScheduleDto scheduleDto = (ScheduleDto) session.getAttribute("scheduleDto");
-        Notification notification = scheduleService.update(scheduleDto);
+        Notification notification = scheduleCRUDService.update(scheduleDto);
         if(notification.hasErrors()) {
             session.setAttribute("valid", notification.getFormattedErrors());
             return "redirect:/regimentCommander/schedule";

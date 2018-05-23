@@ -13,6 +13,7 @@ import repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import static application.Constants.CHIEFCOMMANDER;
 import static application.Constants.QUARTERMASTER;
 
 @Service
@@ -30,13 +31,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void registerAdmin(UserDto user) {
+    public void registerUser(UserDto user,String type) {
         BCryptPasswordEncoder enc = new BCryptPasswordEncoder();
         User dbUser = new User();
         dbUser.setUsername(user.getUsername());
         dbUser.setPassword(enc.encode(user.getPassword()));
         List<Role> userRoles = dbUser.getRoles();
-        userRoles.add(roleRepository.findByRoleName(QUARTERMASTER));
+        if(type.equalsIgnoreCase(QUARTERMASTER))
+            userRoles.add(roleRepository.findByRoleName(QUARTERMASTER));
+        else if(type.equalsIgnoreCase(CHIEFCOMMANDER))
+            userRoles.add(roleRepository.findByRoleName(CHIEFCOMMANDER));
         dbUser.setRoles(userRoles);
         userRepository.save(dbUser);
     }

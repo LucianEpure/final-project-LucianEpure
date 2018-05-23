@@ -1,7 +1,9 @@
 package controller;
 
 
+import dto.RegimentDto;
 import dto.ScheduleDto;
+import dto.SupplyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import service.regiment.RegimentService;
+import service.regiment.SupplyService;
+import service.schedule.ScheduleCRUDService;
 import service.schedule.ScheduleService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,16 +33,27 @@ import java.util.Date;
 public class RegimentCommanderController {
 
     private ScheduleService scheduleService;
+    private ScheduleCRUDService scheduleCRUDService;
+    private RegimentService regimentService;
+    private SupplyService supplyService;
 
     @Autowired
-    public RegimentCommanderController(ScheduleService scheduleService){
+    public RegimentCommanderController(SupplyService supplyService, RegimentService regimentService ,ScheduleCRUDService scheduleCRUDService,ScheduleService scheduleService){
          this.scheduleService = scheduleService;
+         this.scheduleCRUDService = scheduleCRUDService;
+         this.regimentService = regimentService;
+         this.supplyService = supplyService;
     }
 
     @GetMapping
     @Order(value = 1)
-    public String displayMenu(Model model){
-
+    public String displayMenu(Model model,Principal principal){
+        String username = principal.getName();
+        String regimentCode = username.replaceAll("[^0-9]","");
+        RegimentDto regimentDto = regimentService.findByCode(Integer.parseInt(regimentCode));
+        SupplyDto supplyDto = supplyService.findSupplies(regimentDto.getSupplyId());
+        model.addAttribute("regimentDto",regimentDto);
+        model.addAttribute("supplyDto",supplyDto);
         return "regimentCommander";
     }
 
@@ -61,7 +77,7 @@ public class RegimentCommanderController {
         if(approved)
             return "scheduleError";
         else{
-            scheduleDto = scheduleService.save(scheduleDto);
+            scheduleDto = scheduleCRUDService.save(scheduleDto);
             session.setAttribute("scheduleDto",scheduleDto);
             return "redirect:/regimentCommander/schedule";
         }

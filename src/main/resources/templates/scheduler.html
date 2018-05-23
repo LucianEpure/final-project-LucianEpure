@@ -10,8 +10,7 @@
     <link th:href="@{/css/scheduler.css}" rel="Stylesheet">
 </head>
 <body onload = "connect()" onunload = "disconnect()">
-<div align = "left"  style="background-color:lightblue">
-    <h4>Validation</h4>
+<div align = "left">
     <p th:text="${valid}" /></p>
 </div>
 <div class = "leftpart">
@@ -89,17 +88,7 @@
             <p>Req Medical skills:<span th:text = "${requirementDto.requiredMedSkills}"></span></p>
     </div>
 
-        <div class="messages">
-            <table id="conversation" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Reminders</th>
-                </tr>
-                </thead>
-                <tbody id="messages">
-                </tbody>
-            </table>
-        </div>
+
     </div>
 </body>
 </html>

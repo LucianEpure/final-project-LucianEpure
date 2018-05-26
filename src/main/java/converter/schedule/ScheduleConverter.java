@@ -1,4 +1,4 @@
-package converter;
+package converter.schedule;
 
 import dto.ActivityDto;
 import dto.ScheduleDto;

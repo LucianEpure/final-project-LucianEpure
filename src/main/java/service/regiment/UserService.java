@@ -8,5 +8,5 @@ public interface UserService {
 
     UserDto findAdmin();
 
-    UserDto findUser(String username);
+    UserDto findUser(int code);
 }

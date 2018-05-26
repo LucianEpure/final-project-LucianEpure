@@ -21,11 +21,11 @@ public class Regiment {
     private int code;
 
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "supply_id")
     private  Supply supply;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -37,7 +37,7 @@ public class Regiment {
     @JoinColumn(name = "schedule_id")
     private  Schedule schedule;
 */
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "requirement_id")
     private Requirement requirement;
 

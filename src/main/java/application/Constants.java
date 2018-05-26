@@ -42,4 +42,7 @@ public class Constants {
     public static final String MAIL = "@military.com";
 
 
+    public static final String APPROVAL =  "approved tbe schedule";
+
+
 }

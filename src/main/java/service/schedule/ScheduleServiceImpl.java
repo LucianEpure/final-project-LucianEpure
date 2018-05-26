@@ -1,23 +1,22 @@
 package service.schedule;
 
-import converter.ActivityConverter;
-import converter.RegimentConverter;
-import converter.ScheduleConverter;
-import converter.SupplyConverter;
+import converter.activity.ActivityConverter;
+import converter.regiment.RegimentConverter;
+import converter.regiment.SupplyConverter;
+import converter.schedule.ScheduleConverter;
+import converter.schedule.ScheduleReportConverter;
 import dto.*;
-import entity.Activity;
 import entity.Regiment;
 import entity.Schedule;
+import entity.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.ActivityRepository;
 import repository.RegimentRepository;
 import repository.ScheduleRepository;
+import repository.SupplyRepository;
 import service.regiment.RegimentService;
 import service.regiment.SupplyService;
-import validators.IValidator;
-import validators.Notification;
-import validators.ScheduleValidator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,18 +30,20 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private RegimentRepository regimentRepository;
     private RegimentService regimentService;
-    private SupplyService supplyService;
     private ScheduleCRUDService scheduleCRUDService;
     private ScheduleRepository scheduleRepository;
     private ActivityRepository activityRepository;
     private ScheduleConverter scheduleConverter;
     private ScheduleReportService scheduleReportService;
     private ActivityConverter activityConverter;
+    private ScheduleReportConverter scheduleReportConverter;
+    private RegimentConverter regimentConverter;
+    private SupplyConverter supplyConverter;
 
 
 
     @Autowired
-    public ScheduleServiceImpl(RegimentRepository regimentRepository, ScheduleRepository scheduleRepository, ScheduleConverter scheduleConverter, ActivityRepository activityRepository, ScheduleReportService scheduleReportService,RegimentService regimentService, ActivityConverter activityConverter,SupplyService supplyService, ScheduleCRUDService scheduleCRUDService){
+    public ScheduleServiceImpl( SupplyConverter supplyConverter, RegimentConverter regimentConverter, ScheduleReportConverter scheduleReportConverter, RegimentRepository regimentRepository, ScheduleRepository scheduleRepository, ScheduleConverter scheduleConverter, ActivityRepository activityRepository, ScheduleReportService scheduleReportService, RegimentService regimentService, ActivityConverter activityConverter,  ScheduleCRUDService scheduleCRUDService){
         this.regimentRepository = regimentRepository;
         this.scheduleRepository = scheduleRepository;
         this.scheduleConverter = scheduleConverter;
@@ -50,15 +51,19 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.scheduleReportService = scheduleReportService;
         this.activityConverter = activityConverter;
         this.regimentService = regimentService;
-        this.supplyService  = supplyService;
+        this.regimentConverter = regimentConverter;
         this.scheduleCRUDService = scheduleCRUDService;
+        this.scheduleReportConverter = scheduleReportConverter;
+        this.supplyConverter = supplyConverter;
+
     }
 
 
 
 @Override
 public boolean checkIfApproved(ScheduleDto scheduleDto){
-    List<Schedule> schedules = scheduleRepository.findByRegimentAndDate(regimentRepository.findByCode(scheduleDto.getRegimentCode()),scheduleDto.getDate());
+        Regiment regiment = regimentRepository.findByCode(scheduleDto.getRegimentCode());
+        List<Schedule> schedules = scheduleRepository.findByRegimentAndDate(regiment,scheduleDto.getDate());
     for(Schedule schedule1:schedules){
         if(schedule1.getApproved().equalsIgnoreCase(APPROVED))
             return true;
@@ -95,7 +100,7 @@ public boolean checkIfApproved(ScheduleDto scheduleDto){
         return activityConverter.convertActivityToDto(activityRepository.findByActivityName(activityName));
     }
 
-    @Override
+   @Override
     public List<ScheduleDto> findByDate(Date date) {
         List<Schedule> schedules = scheduleRepository.findByDate(date);
         List<ScheduleDto> scheduleDtos = new ArrayList<ScheduleDto>();
@@ -106,17 +111,20 @@ public boolean checkIfApproved(ScheduleDto scheduleDto){
     }
 
     @Override
-    public void approveSchedule(int scheduleId) {
-        ScheduleDto scheduleDto = scheduleCRUDService.findById(scheduleId);
+    public void approveSchedule(ScheduleDto scheduleDto) {
         ScheduleReportDto scheduleReport = new ScheduleReportDto();
-        RegimentDto regiment = regimentService.findByCode(scheduleDto.getRegimentCode());
-        SupplyDto supply = supplyService.findSupplies(regiment.getSupplyId());
-        scheduleReport.init(regimentService.findByCode(scheduleDto.getRegimentCode()),supply);
+        Regiment regiment = regimentRepository.findByCode(scheduleDto.getRegimentCode());
+        Supply supply = regiment.getSupply();
+        RegimentDto regimentDto = regimentConverter.convertRegimentToDto(regiment);
+        SupplyDto supplyDto = supplyConverter.convertSupplyToDto(supply);
+        scheduleReport = scheduleReportConverter.convertToScheduleReport(regimentDto,supplyDto);
         scheduleDto.setApproved(APPROVED);
         for(ActivityDto activityDto:scheduleDto.getActivities()){
             scheduleReportService.updateStats(scheduleReport,activityDto,"add");
         }
-        regimentService.update(scheduleReportService.retrieveRegiment(scheduleReport),scheduleReportService.retrieveSupply(scheduleReport));
+        regimentDto = scheduleReportConverter.extractRegiment(scheduleReport);
+        supplyDto = scheduleReportConverter.extractSupply(scheduleReport);
+        regimentService.update(regimentDto,supplyDto);
         scheduleCRUDService.update(scheduleDto);
     }
 

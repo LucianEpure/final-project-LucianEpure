@@ -1,5 +1,7 @@
-package converter;
+package converter.schedule;
 
+import converter.activity.ActivityConverter;
+import converter.regiment.RegimentConverter;
 import dto.ActivityDto;
 import dto.ScheduleDto;
 import entity.Activity;
@@ -7,7 +9,6 @@ import entity.Schedule;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -38,9 +39,6 @@ public class ScheduleConverterImpl implements ScheduleConverter{
         scheduleDto.setActivities(activities);
         scheduleDto.setActivityNames(activitiesNames);
         scheduleDto.setApproved(schedule.getApproved());
-        //scheduleDto.setRegimentStats(regimentConverter.convertRegimentToDto(schedule.getRegiment()));
-        //System.out.println("REGIMEEEEEEEEEENT"+ scheduleDto.getRegimentStats().getTypeName());
-
         return scheduleDto;
     }
 

@@ -1,6 +1,6 @@
 package service.regiment;
 
-import converter.UserConverter;
+import converter.regiment.UserConverter;
 import dto.UserDto;
 import entity.Role;
 import entity.User;
@@ -13,8 +13,7 @@ import repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static application.Constants.CHIEFCOMMANDER;
-import static application.Constants.QUARTERMASTER;
+import static application.Constants.*;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -37,10 +36,7 @@ public class UserServiceImpl implements UserService{
         dbUser.setUsername(user.getUsername());
         dbUser.setPassword(enc.encode(user.getPassword()));
         List<Role> userRoles = dbUser.getRoles();
-        if(type.equalsIgnoreCase(QUARTERMASTER))
-            userRoles.add(roleRepository.findByRoleName(QUARTERMASTER));
-        else if(type.equalsIgnoreCase(CHIEFCOMMANDER))
-            userRoles.add(roleRepository.findByRoleName(CHIEFCOMMANDER));
+            userRoles.add(roleRepository.findByRoleName(type));
         dbUser.setRoles(userRoles);
         userRepository.save(dbUser);
     }
@@ -55,8 +51,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto findUser(String username) {
+    public UserDto findUser(int regimentCode) {
+        String username = USERNAME+String.valueOf(regimentCode)+MAIL;
         User user = userRepository.findByUsername(username);
         return userConverter.convertUserToDto(user);
     }
+
 }

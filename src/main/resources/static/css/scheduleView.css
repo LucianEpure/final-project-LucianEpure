@@ -59,3 +59,16 @@ td:hover {
 @media (max-width: 800px) {
 .container td:nth-child(4),
 .container th:nth-child(4) { display: none; }
+
+
+
+body {
+  background: #76b852; /* fallback for old browsers */
+  background: -webkit-linear-gradient(right, #2B4324, #8DC26F);
+  background: -moz-linear-gradient(right, #2B4324, #8DC26F);
+  background: -o-linear-gradient(right, #2B4324, #8DC26F);
+  background: linear-gradient(to left, #2B4324, #8DC26F);
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

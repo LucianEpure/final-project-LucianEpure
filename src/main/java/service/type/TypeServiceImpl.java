@@ -1,6 +1,6 @@
 package service.type;
 
-import converter.TypeConverter;
+import converter.type.TypeConverter;
 import dto.TypeDto;
 import entity.Type;
 
@@ -12,18 +12,17 @@ import repository.TypeRepository;
 public class TypeServiceImpl implements TypeService{
 
     TypeRepository typeRepository;
-    TypeConverter typeConverter;
 
     @Autowired
-    public TypeServiceImpl(TypeRepository typeRepository, TypeConverter typeConverter){
+    public TypeServiceImpl(TypeRepository typeRepository){
         this.typeRepository = typeRepository;
-        this.typeConverter = typeConverter;
+
     }
 
     @Override
-    public TypeDto findTypeByName(String typeName) {
-        Type type = typeRepository.findByTypeName(typeName);
-        TypeDto typeDto = typeConverter.convertToDto(type);
-        return typeDto;
+    public Type addNewType(String typeName) {
+        Type type = new Type();
+        type.setTypeName(typeName);
+        return typeRepository.save(type);
     }
 }

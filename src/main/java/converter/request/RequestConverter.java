@@ -1,4 +1,4 @@
-package converter;
+package converter.request;
 
 import dto.RequestDto;
 import entity.Request;

@@ -1,4 +1,4 @@
-package converter;
+package converter.activity;
 
 import dto.ActivityDto;
 import entity.Activity;

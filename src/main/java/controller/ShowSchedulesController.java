@@ -21,6 +21,9 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
+import static application.Constants.APPROVAL;
+import static application.Constants.REGIMENTCOMMANDER;
+
 @Controller
 @RequestMapping(value = "/quartermaster/showSchedules")
 public class ShowSchedulesController {
@@ -28,11 +31,13 @@ public class ShowSchedulesController {
 
     private ScheduleService scheduleService;
     private NotifyService notifyService;
+    private UserService userService;
     private ScheduleCRUDService scheduleCRUDService;
 
     @Autowired
     public ShowSchedulesController(ScheduleCRUDService scheduleCRUDService,ScheduleService scheduleService, ScheduleReportService scheduleReportService,SupplyService supplyService, RegimentService regimentService, SimpMessagingTemplate messagingTemplate, UserService userService, NotifyService notifyService){
     this.scheduleService = scheduleService;
+    this.userService = userService;
     this.notifyService= notifyService;
     this.scheduleCRUDService = scheduleCRUDService;
     }
@@ -47,17 +52,18 @@ public class ShowSchedulesController {
     }
 
     @PostMapping(value = "/{scheduleId}",params = "approve")
-    public String approve(@PathVariable(value = "scheduleId") int scheduleId,Model model,Principal principal) {
-        scheduleService.approveSchedule(scheduleId);
-
+    public String approve(@PathVariable(value = "scheduleId") int scheduleId,Principal principal) {
         ScheduleDto scheduleDto = scheduleCRUDService.findById(scheduleId);
+        scheduleService.approveSchedule(scheduleDto);
         Message message = new Message();
-        message.setContent(principal.getName()+" approved tbe schedule "+scheduleId);
-        notifyService.notifyRegimentCommander(scheduleCRUDService.findById(scheduleId).getRegimentCode(),message);
+        message.setContent(principal.getName()+APPROVAL+scheduleId);
+        UserDto user  = userService.findUser(scheduleDto.getRegimentCode());
+        notifyService.notify(user.getUsername(),message);
         return "redirect:/quartermaster/showSchedules";
     }
     @PostMapping(value = "/{scheduleId}", params = "deny")
     public String deny(@PathVariable(value = "scheduleId") int scheduleId,Model model){
+
        scheduleService.denySchedule(scheduleId);
         return "redirect:/quartermaster/showSchedules";
     }

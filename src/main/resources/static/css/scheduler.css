@@ -17,6 +17,20 @@ a:hover + .requirements {
     display: block;
 }
 
+button {
+  width: 100px;
+  background: #2B4324;
+  color: #fff;
+  font-family: Tahoma, Geneva, sans-serif;
+
+  border-radius: 15px;
+  border: 1p solid #999;
+}
+
+button:hover {
+  background: #8DC26F;
+}
+
 body {
   background: #76b852; /* fallback for old browsers */
   background: -webkit-linear-gradient(right, #2B4324, #8DC26F);

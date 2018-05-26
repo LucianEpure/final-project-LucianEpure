@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import service.DateTime;
 import service.regiment.RegimentService;
 import service.regiment.SupplyService;
 import service.schedule.ScheduleCRUDService;
@@ -36,21 +37,23 @@ public class RegimentCommanderController {
     private ScheduleCRUDService scheduleCRUDService;
     private RegimentService regimentService;
     private SupplyService supplyService;
+    private DateTime dateTime;
 
     @Autowired
-    public RegimentCommanderController(SupplyService supplyService, RegimentService regimentService ,ScheduleCRUDService scheduleCRUDService,ScheduleService scheduleService){
+    public RegimentCommanderController(DateTime dateTime, SupplyService supplyService, RegimentService regimentService ,ScheduleCRUDService scheduleCRUDService,ScheduleService scheduleService){
          this.scheduleService = scheduleService;
          this.scheduleCRUDService = scheduleCRUDService;
          this.regimentService = regimentService;
          this.supplyService = supplyService;
+         this.dateTime = dateTime;
     }
 
     @GetMapping
     @Order(value = 1)
     public String displayMenu(Model model,Principal principal){
         String username = principal.getName();
-        String regimentCode = username.replaceAll("[^0-9]","");
-        RegimentDto regimentDto = regimentService.findByCode(Integer.parseInt(regimentCode));
+        int regimentCode = regimentService.extractRegimentFromUser(username);
+        RegimentDto regimentDto = regimentService.findByCode(regimentCode);
         SupplyDto supplyDto = supplyService.findSupplies(regimentDto.getSupplyId());
         model.addAttribute("regimentDto",regimentDto);
         model.addAttribute("supplyDto",supplyDto);
@@ -61,22 +64,16 @@ public class RegimentCommanderController {
         public String schedule(Principal principal, HttpSession session){
         boolean approved;
         ScheduleDto scheduleDto = new ScheduleDto();
-        try {
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            Date today = new Date();
-            Date todayWithZeroTime = formatter.parse(formatter.format(today));
-            scheduleDto.setDate(todayWithZeroTime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        Date today = new Date();
+        scheduleDto.setDate(dateTime.noTime(today));
         String username = principal.getName();
-        String regimentCode = username.replaceAll("[^0-9]","");
-        scheduleDto.setRegimentCode(Integer.parseInt(regimentCode));
+        int regimentCode = regimentService.extractRegimentFromUser(username);
+        scheduleDto.setRegimentCode(regimentCode);
         approved = scheduleService.checkIfApproved(scheduleDto);
         if(approved)
             return "scheduleError";
         else{
+
             scheduleDto = scheduleCRUDService.save(scheduleDto);
             session.setAttribute("scheduleDto",scheduleDto);
             return "redirect:/regimentCommander/schedule";

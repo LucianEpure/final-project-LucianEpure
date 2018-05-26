@@ -1,8 +1,9 @@
 package service.type;
 
 import dto.TypeDto;
+import entity.Type;
 
 public interface TypeService {
 
-   TypeDto findTypeByName(String type);
+   Type addNewType(String typeName);
 }

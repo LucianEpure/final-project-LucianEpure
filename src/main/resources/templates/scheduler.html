@@ -51,19 +51,19 @@
                 <option value="Tactics Training">Tactics Training</option>
                 <option th:each="option : ${options}" th:text="${option}" ></option>
             </select>
-            <p><input type="submit" name="addActivity" value="Add Activity" /> </p>
+           <button name="addActivity">Add Activity</button>
         </form>
 
         <form action="#" name="removeActivity" th:action="@{/regimentCommander/schedule}"  method="post">
-            <p><input type="submit" name="removeActivity" value="Remove Activity" /> </p>
+            <button name="removeActivity" >Remove Activity</button>
         </form>
 
         <form action="#" name="finishSchedule" th:action="@{/regimentCommander/schedule}"  method="post">
-            <p><input type="submit" name="finishSchedule" value="Finish Schedule" onclick="return confirm ('Are you sure?')"/> </p>
+            <button name="finishSchedule"onclick="return confirm ('Are you sure?')"> Finish Schedule</button>
         </form>
 
         <form action = "#" th:action="@{/regimentCommander}" method = "post">
-            <p><input type="submit" name="logout" value="Log Out" /> </p>
+            <button name="logout" >Log out</button>
         </form>
         <table border="1">
             <thead>

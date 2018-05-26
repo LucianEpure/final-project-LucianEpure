@@ -24,6 +24,8 @@ import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.List;
 
+import static application.Constants.QUARTERMASTER;
+
 @Controller
 @RequestMapping(value = "/regimentCommander/schedule")
 public class ScheduleController {
@@ -54,8 +56,8 @@ public class ScheduleController {
         ScheduleReportDto scheduleReport = scheduleDto.getScheduleReport();
         List<ActivityDto> activities = scheduleDto.getActivities();
         String username = principal.getName();
-        String regimentCode = username.replaceAll("[^0-9]","");
-        RegimentDto regimentDto = regimentService.findByCode(Integer.parseInt(regimentCode));
+        int regimentCode = regimentService.extractRegimentFromUser(username);
+        RegimentDto regimentDto = regimentService.findByCode(regimentCode);
         RequirementDto requirementDto = requirementService.findRequirement(regimentDto.getRequirementId());
         model.addAttribute("requirementDto",requirementDto);
         model.addAttribute("valid",valid);
@@ -93,7 +95,8 @@ public class ScheduleController {
         else{
             Message message = new Message();
             message.setContent(principal.getName()+" added a schedule!.");
-            notifyService.notifyAdmin(message);
+            UserDto userDto = userService.findAdmin();
+            notifyService.notify(userDto.getUsername(),message);
             return "redirect:/regimentCommander";
         }
 

@@ -1,4 +1,4 @@
-package converter;
+package converter.regiment;
 
 import dto.RequirementDto;
 import entity.Requirement;

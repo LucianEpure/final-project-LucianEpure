@@ -9,4 +9,5 @@ public interface RequirementService {
     RequirementDto findRequirement(int requirementId);
 
     void changeRequirements(RequirementDto requirementDto, int regimentCode);
+
 }

@@ -1,6 +1,6 @@
 package application;
 
-import converter.TypeConverter;
+import converter.type.TypeConverter;
 import dto.RegimentDto;
 import dto.RequestDto;
 import dto.TypeDto;
@@ -15,8 +15,8 @@ import repository.TypeRepository;
 import service.regiment.RegimentService;
 import service.regiment.SupplyService;
 import service.request.RequestService;
-import service.schedule.ScheduleService;
 import service.regiment.UserService;
+import service.type.TypeService;
 
 import javax.annotation.PostConstruct;
 
@@ -32,22 +32,20 @@ public class Bootstrap {
     private RoleRepository roleRepository;
 
     private RegimentService regimentService;
-    private TypeConverter typeConverter;
     private SupplyService supplyService;
     private UserService userService;
     private ActivityRepository activityRepository;
-    private TypeRepository typeRepository;
     private RequestService requestService;
+    private TypeService typeService;
     @Autowired
-    public Bootstrap(TypeConverter typeConverter, RequestService requestService, RoleRepository roleRepository,TypeRepository typeRepository, UserService userService, RegimentService regimentService, ActivityRepository activityRepository,SupplyService supplyService ){
+    public Bootstrap(TypeService typeService,  RequestService requestService, RoleRepository roleRepository, UserService userService, RegimentService regimentService, ActivityRepository activityRepository,SupplyService supplyService ){
         this.roleRepository = roleRepository;
+        this.typeService = typeService;
         this.regimentService = regimentService;
         this.activityRepository = activityRepository;
         this.userService = userService;
         this.supplyService = supplyService;
-        this.typeRepository = typeRepository;
         this.requestService = requestService;
-        this.typeConverter = typeConverter;
 
     }
 
@@ -72,11 +70,11 @@ public class Bootstrap {
 
     private void initTypes(){
 
-        regimentService.addNewType(INFANTRY);
-        regimentService.addNewType(MEDICS);
-        regimentService.addNewType(ASSAULT);
-        regimentService.addNewType(ENGINEERS);
-        regimentService.addNewType(RECRUITS);
+        typeService.addNewType(INFANTRY);
+        typeService.addNewType(MEDICS);
+        typeService.addNewType(ASSAULT);
+        typeService.addNewType(ENGINEERS);
+        typeService.addNewType(RECRUITS);
     }
 
     private void initActivities(){
@@ -126,12 +124,10 @@ public class Bootstrap {
 
     private void initRequests(){
         RequestDto requestDto = new RequestDto();
-        List<TypeDto> types = new ArrayList<TypeDto>();
-        types.add(typeConverter.convertToDto(typeRepository.findByTypeName(INFANTRY)));
-        types.add(typeConverter.convertToDto(typeRepository.findByTypeName(INFANTRY)));
-        types.add(typeConverter.convertToDto(typeRepository.findByTypeName(MEDICS)));
-        requestDto.setTypes(types);
         requestDto.setLocationName("Guantanamo");
+        requestService.addUnit(requestDto,INFANTRY);
+        requestService.addUnit(requestDto,INFANTRY);
+        requestService.addUnit(requestDto,MEDICS);
         requestService.addRequest(requestDto);
         List<RequestDto> requestDtos  = requestService.showAll();
 

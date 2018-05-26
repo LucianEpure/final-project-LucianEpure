@@ -26,11 +26,11 @@ import java.util.List;
 @RequestMapping("/chiefCommander")
 public class ChiefController {
 
-    private TypeService typeService;
+
     private RequestService requestService;
     @Autowired
-    public ChiefController(TypeService typeService, RequestService requestService){
-    this.typeService = typeService;
+    public ChiefController( RequestService requestService){
+
     this.requestService = requestService;
     }
 
@@ -50,13 +50,9 @@ public class ChiefController {
 
     @PostMapping(params = "addUnit")
     public String addRequest(@RequestParam("location") String location, @RequestParam("type") String type, HttpSession session){
-        TypeDto typeDto = typeService.findTypeByName(type);
         RequestDto requestDto = (RequestDto) session.getAttribute("requestDto");
         requestDto.setLocationName(location);
-
-        List<TypeDto> typeDtos = requestDto.getTypes();
-        typeDtos.add(typeDto);
-        requestDto.setTypes(typeDtos);
+        requestDto = requestService.addUnit(requestDto,type);
         session.setAttribute("requestDto",requestDto);
         return "redirect:/chiefCommander";
     }

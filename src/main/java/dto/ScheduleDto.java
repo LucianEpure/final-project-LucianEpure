@@ -53,6 +53,10 @@ public class ScheduleDto{
         }
     }*/
 
+    public void notifyObs(){
+
+    }
+
     public String getApproved() {
         return approved;
     }

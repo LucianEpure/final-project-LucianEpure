@@ -1,6 +1,6 @@
 package service.regiment;
 
-import converter.RequirementConverter;
+import converter.regiment.RequirementConverter;
 import dto.RequirementDto;
 import entity.Regiment;
 import entity.Requirement;

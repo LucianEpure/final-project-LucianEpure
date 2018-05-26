@@ -1,13 +1,8 @@
-package converter;
+package converter.regiment;
 
 import dto.RegimentDto;
-import dto.RequirementDto;
-import dto.SupplyDto;
-import dto.UserDto;
 import entity.*;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class RegimentConverterImpl implements RegimentConverter {

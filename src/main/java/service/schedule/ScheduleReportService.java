@@ -7,9 +7,8 @@ import dto.SupplyDto;
 
 public interface ScheduleReportService {
 
+
+
     ScheduleReportDto updateStats(ScheduleReportDto scheduleReport, ActivityDto activity, String type);
 
-    RegimentDto retrieveRegiment(ScheduleReportDto scheduleReport);
-
-    SupplyDto retrieveSupply(ScheduleReportDto scheduleReport);
 }

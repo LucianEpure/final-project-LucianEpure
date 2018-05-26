@@ -1,5 +1,6 @@
-package converter;
+package converter.request;
 
+import converter.type.TypeConverter;
 import dto.RequestDto;
 import dto.TypeDto;
 import entity.Request;

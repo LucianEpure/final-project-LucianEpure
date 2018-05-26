@@ -1,22 +1,19 @@
 package service.schedule;
 
-import converter.ActivityConverter;
-import converter.RegimentConverter;
-import converter.ScheduleConverter;
-import converter.SupplyConverter;
-import dto.ActivityDto;
-import dto.ScheduleDto;
-import dto.ScheduleReportDto;
+import converter.activity.ActivityConverter;
+import converter.regiment.RegimentConverter;
+import converter.schedule.ScheduleConverter;
+import converter.regiment.SupplyConverter;
+import converter.schedule.ScheduleReportConverter;
+import dto.*;
 import entity.Activity;
 import entity.Regiment;
 import entity.Schedule;
+import entity.Supply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.ActivityRepository;
 import repository.RegimentRepository;
 import repository.ScheduleRepository;
-import service.regiment.RegimentService;
-import service.regiment.SupplyService;
 import validators.IValidator;
 import validators.Notification;
 import validators.ScheduleValidator;
@@ -32,32 +29,38 @@ public class ScheduleCRUDServiceImpl implements ScheduleCRUDService {
     private ActivityConverter activityConverter;
     private RegimentConverter regimentConverter;
     private SupplyConverter supplyConverter;
+    private ScheduleReportConverter scheduleReportConverter;
 
 
     @Autowired
-    public ScheduleCRUDServiceImpl(SupplyConverter supplyConverter,ActivityConverter activityConverter,ScheduleRepository scheduleRepository, RegimentRepository regimentRepository, RegimentConverter regimentConverter,ScheduleConverter scheduleConverter){
+    public ScheduleCRUDServiceImpl(ScheduleReportConverter scheduleReportConverter, SupplyConverter supplyConverter,ActivityConverter activityConverter,ScheduleRepository scheduleRepository, RegimentRepository regimentRepository, RegimentConverter regimentConverter,ScheduleConverter scheduleConverter){
         this.scheduleRepository = scheduleRepository;
         this.regimentConverter = regimentConverter;
         this.regimentRepository = regimentRepository;
         this.activityConverter = activityConverter;
         this.scheduleConverter = scheduleConverter;
         this.supplyConverter = supplyConverter;
+        this.scheduleReportConverter = scheduleReportConverter;
 
     }
     @Override
     public ScheduleDto save(ScheduleDto scheduleDto) {
         Schedule schedule = new Schedule();
+        Regiment regiment;
+        Supply supply;
         schedule.setDate(scheduleDto.getDate());
-        List<Schedule> schedules = scheduleRepository.findByRegimentAndDate(regimentRepository.findByCode(scheduleDto.getRegimentCode()),scheduleDto.getDate());
+        regiment = regimentRepository.findByCode(scheduleDto.getRegimentCode());
+        supply = regiment.getSupply();
+        List<Schedule> schedules = scheduleRepository.findByRegimentAndDate(regiment,scheduleDto.getDate());
         for(Schedule schedule1:schedules){
             schedule.setId(schedule1.getId());      //if there is already a schedule for that date that has not been approved, the commander may update it
         }
-        schedule.setRegiment(regimentRepository.findByCode(scheduleDto.getRegimentCode()));
+        schedule.setRegiment(regiment);
         schedule = scheduleRepository.save(schedule);
         ScheduleDto scheduleDto1 = scheduleConverter.convertScheduleToDto(schedule);
-        ScheduleReportDto scheduleReport = new ScheduleReportDto();
-        scheduleReport.init(regimentConverter.convertRegimentToDto(schedule.getRegiment()),supplyConverter.convertSupplyToDto(schedule.getRegiment().getSupply()));
-        scheduleDto1.setScheduleReport(scheduleReport);
+        RegimentDto regimentDto = regimentConverter.convertRegimentToDto(regiment);
+        SupplyDto supplyDto = supplyConverter.convertSupplyToDto(supply);
+        scheduleDto1.setScheduleReport(scheduleReportConverter.convertToScheduleReport(regimentDto,supplyDto));
         return  scheduleDto1;
     }
 
@@ -74,7 +77,7 @@ public class ScheduleCRUDServiceImpl implements ScheduleCRUDService {
         else{
             Schedule schedule = new Schedule();
             schedule.setId(scheduleDto.getId());
-            schedule.setRegiment(regimentRepository.getOne(scheduleDto.getRegimentId()));
+            schedule.setRegiment(regimentRepository.findByCode(scheduleDto.getRegimentCode()));
             schedule.setDate(scheduleDto.getDate());
             schedule.setApproved(scheduleDto.getApproved());
             List<Activity> activities = new ArrayList<Activity>();

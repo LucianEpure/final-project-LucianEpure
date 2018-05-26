@@ -1,4 +1,4 @@
-package converter;
+package converter.type;
 
 import dto.TypeDto;
 import entity.Type;

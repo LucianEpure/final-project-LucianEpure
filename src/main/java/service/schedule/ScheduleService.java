@@ -15,7 +15,7 @@ public interface ScheduleService {
 
     List<ScheduleDto> findByDate(Date date);
 
-    void approveSchedule(int scheduleId);
+    void approveSchedule(ScheduleDto scheduleDto);
 
     void denySchedule(int scheduleId);
 

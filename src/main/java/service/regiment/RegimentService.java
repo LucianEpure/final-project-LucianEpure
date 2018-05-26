@@ -1,9 +1,6 @@
 package service.regiment;
 
-import dto.RegimentDto;
-import dto.RequirementDto;
-import dto.SupplyDto;
-import dto.UserDto;
+import dto.*;
 import entity.Regiment;
 import entity.Supply;
 import entity.Type;
@@ -17,13 +14,15 @@ public interface RegimentService {
 
     Notification<Boolean> enlistRegiment(int code, String password);
 
-    Notification<Boolean> sendRegimentToWar(int regimentCode, int locationCode);
+    Notification<Boolean> sendRegimentToWar(int regimentCode, RequestDto requestDto);
 
     RegimentDto findByCode(int code);
 
     RegimentDto update(RegimentDto regimentDto, SupplyDto supplyDto);
 
-    Type addNewType(String typeName);
+    int extractRegimentFromUser(String username);
+
+    void removeAll();
 
     List<RegimentDto> showAll();
 }

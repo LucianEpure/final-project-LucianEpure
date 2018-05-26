@@ -41,27 +41,7 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
         return scheduleReport;
     }
 
-    @Override
-    public RegimentDto retrieveRegiment(ScheduleReportDto scheduleReport) {
-        RegimentDto regimentDto = new RegimentDto();
-        regimentDto.setCode(scheduleReport.getCode());
-        regimentDto.setStrength(scheduleReport.getStrength());
-        regimentDto.setStamina(scheduleReport.getStamina());
-        regimentDto.setShooting(scheduleReport.getShooting());
-        regimentDto.setIntelligence(scheduleReport.getIntelligence());
-        regimentDto.setMedSkills(scheduleReport.getMedSkills());
-        regimentDto.setTypeName(scheduleReport.getTypeName());
-        return  regimentDto;
-    }
 
-    @Override
-    public SupplyDto retrieveSupply(ScheduleReportDto scheduleReport) {
-        SupplyDto supplyDto = new SupplyDto();
-        supplyDto.setEquipment(scheduleReport.getEquipment());
-        supplyDto.setAmmunition(scheduleReport.getAmmunition());
-        supplyDto.setFood(scheduleReport.getFood());
-        return  supplyDto;
-    }
 
     private String upgradeUnit(ScheduleReportDto scheduleReport){
         if(scheduleReport.getTypeName().equalsIgnoreCase(RECRUITS)) {

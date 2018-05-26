@@ -2,9 +2,11 @@ package service.regiment;
 
 
 import application.Constants;
-import converter.RegimentConverter;
+import converter.regiment.RegimentConverter;
 import dto.RegimentDto;
+import dto.RequestDto;
 import dto.SupplyDto;
+import dto.TypeDto;
 import entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,29 +28,25 @@ import static application.Constants.USERNAME;
 @Service
 public class RegimentServiceImpl implements RegimentService {
 
-    private UserRepository userRepository;
+
     private RoleRepository roleRepository;
     private RegimentRepository regimentRepository;
     private TypeRepository typeRepository;
-    private RequirementRepository requirementRepository;
-    private SupplyRepository supplyRepository;
     private RegimentConverter regimentConverter;
-    private RequestRepository requestRepository;
+    private RequestService requestService;
     private ScheduleRepository scheduleRepository;
     private IValidator validator;
 
 
     @Autowired
-    public RegimentServiceImpl( RequestRepository requestRepository,UserRepository userRepository, RoleRepository roleRepository, RegimentRepository regimentRepository, TypeRepository typeRepository, SupplyRepository supplyRepository, RequirementRepository requirementRepository, RegimentConverter regimentConverter,ScheduleRepository scheduleRepository){
-        this.userRepository = userRepository;
+    public RegimentServiceImpl( RequestService requestService,  RoleRepository roleRepository, RegimentRepository regimentRepository, TypeRepository typeRepository, RegimentConverter regimentConverter,ScheduleRepository scheduleRepository){
+
         this.roleRepository = roleRepository;
         this.regimentRepository = regimentRepository;
         this.typeRepository = typeRepository;
-        this.supplyRepository = supplyRepository;
-        this.requirementRepository = requirementRepository;
         this.regimentConverter = regimentConverter;
-        this.requestRepository = requestRepository;
         this.scheduleRepository = scheduleRepository;
+        this.requestService = requestService;
     }
 
 
@@ -79,9 +77,6 @@ public class RegimentServiceImpl implements RegimentService {
             regiment.setType(typeRepository.findByTypeName(Constants.RECRUITS));
             regiment.setUser(user);
             regiment.setSupply(supply);
-            requirementRepository.save(requirement);
-            supplyRepository.save(supply);
-            userRepository.save(user);
             regimentRepository.save(regiment);
         }
         return regimentRegisterNotification;
@@ -89,27 +84,22 @@ public class RegimentServiceImpl implements RegimentService {
 
     @Override
     @Transactional
-    public Notification<Boolean> sendRegimentToWar(int regimentCode, int locationCode) {
+    public Notification<Boolean> sendRegimentToWar(int regimentCode, RequestDto requestDto) {
        boolean found = false;
         Regiment regiment = regimentRepository.findByCode(regimentCode);
-        Request request = requestRepository.getOne(locationCode);
-        List<Type> types = request.getTypes();
-
-            for(Type type:types){
+        List<TypeDto> types = requestDto.getTypes();
+            for(TypeDto type:types){
                 if(regiment.getType().getTypeName().equals(type.getTypeName())){
                     scheduleRepository.deleteByRegiment(regiment);
                     regimentRepository.deleteById(regiment.getId());
                     types.remove(type);
-                    request.setTypes(types);
-                    requestRepository.save(request);
-                    if(types.size()==0)
-                        requestRepository.deleteById(request.getId());
-
+                    requestDto.setTypes(types);
+                    requestService.updateRequest(requestDto);
                     found = true;
+                    break;
                 }
 
             }
-            System.out.println("FOUUUUUUND"+found);
         validator = new WarValidator(found);
         boolean warValid = validator.validate();
         Notification<Boolean> sendToWarNotification = new Notification<>();
@@ -119,7 +109,6 @@ public class RegimentServiceImpl implements RegimentService {
         }
         else
             sendToWarNotification.setResult(Boolean.TRUE);
-        System.out.println("ERRRORRRRSS"+sendToWarNotification.getFormattedErrors());
         return sendToWarNotification;
     }
 
@@ -138,7 +127,6 @@ public class RegimentServiceImpl implements RegimentService {
         supply.setFood(supplyDto.getFood());
         supply.setAmmunition(supplyDto.getAmmunition());
         supply.setEquipment(supplyDto.getEquipment());
-        supplyRepository.save(supply);
 
         regiment.setStamina(regimentDto.getStamina());
         regiment.setStrength(regimentDto.getStrength());
@@ -152,11 +140,16 @@ public class RegimentServiceImpl implements RegimentService {
     }
 
 
+
+
     @Override
-    public Type addNewType(String typeName) {
-        Type type = new Type();
-        type.setTypeName(typeName);
-        return typeRepository.save(type);
+    public int extractRegimentFromUser(String username) {
+        return Integer.parseInt(username.replaceAll("[^0-9]",""));
+    }
+
+    @Override
+    public void removeAll() {
+        regimentRepository.deleteAll();
     }
 
     @Override

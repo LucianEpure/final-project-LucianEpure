@@ -12,21 +12,13 @@ import static application.Constants.USERNAME;
 public class NotifyServiceImpl implements NotifyService {
 
     private SimpMessagingTemplate messagingTemplate;
-    private UserService userService;
 
     @Autowired
-    public NotifyServiceImpl(SimpMessagingTemplate messagingTemplate,UserService userService){
+    public NotifyServiceImpl(SimpMessagingTemplate messagingTemplate){
         this.messagingTemplate = messagingTemplate;
-        this.userService = userService;
     }
     @Override
-    public void notifyAdmin(Message message) {
-        messagingTemplate.convertAndSendToUser(userService.findAdmin().getUsername(), "/queue/reply", message);
-    }
-
-    @Override
-    public void notifyRegimentCommander(int regimentCode, Message message) {
-        String username = USERNAME + regimentCode + MAIL;
-        messagingTemplate.convertAndSendToUser( username,"/queue/reply", message);
+    public void notify(String username, Message message) {
+        messagingTemplate.convertAndSendToUser(username, "/queue/reply", message);
     }
 }

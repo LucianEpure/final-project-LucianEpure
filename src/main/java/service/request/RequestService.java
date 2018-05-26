@@ -10,6 +10,14 @@ public interface RequestService {
 
     List<RequestDto> showAll();
 
+    RequestDto findByLocation(String location);
+
+    RequestDto updateRequest(RequestDto requestDto);
+
+    RequestDto addUnit(RequestDto requestDto, String typeName);
+
+    void removeAll();
+
     void removeRequest(int id);
 
 }
